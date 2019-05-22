@@ -94,4 +94,11 @@ public class Dev_user {
 		this.modifyDate = modifyDate;
 	}
 
+	@Override
+	public String toString() {
+		return "Dev_user [id=" + id + ", devCode=" + devCode + ", devName=" + devName + ", devPassword=" + devPassword
+				+ ", devEmail=" + devEmail + ", devInfo=" + devInfo + ", createdBy=" + createdBy + ", creationDate="
+				+ creationDate + ", modifyBy=" + modifyBy + ", modifyDate=" + modifyDate + "]";
+	}
+
 }

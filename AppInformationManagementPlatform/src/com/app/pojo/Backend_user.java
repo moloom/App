@@ -6,7 +6,7 @@ public class Backend_user {
 	private Integer id;
 	private String userCode;
 	private String userName;
-	private Integer userType;
+	private Integer userTypeName;
 	private String userPassword;
 	private Integer createdBy;
 	private Date creationDate;
@@ -37,12 +37,13 @@ public class Backend_user {
 		this.userName = userName;
 	}
 
-	public Integer getUserType() {
-		return userType;
+	
+	public Integer getUserTypeName() {
+		return userTypeName;
 	}
 
-	public void setUserType(Integer userType) {
-		this.userType = userType;
+	public void setUserTypeName(Integer userTypeName) {
+		this.userTypeName = userTypeName;
 	}
 
 	public String getUserPassword() {
@@ -84,5 +85,13 @@ public class Backend_user {
 	public void setModifyDate(Date modifyDate) {
 		this.modifyDate = modifyDate;
 	}
+
+	@Override
+	public String toString() {
+		return "Backend_user [id=" + id + ", userCode=" + userCode + ", userName=" + userName + ", userType=" + userTypeName
+				+ ", userPassword=" + userPassword + ", createdBy=" + createdBy + ", creationDate=" + creationDate
+				+ ", modifyBy=" + modifyBy + ", modifyDate=" + modifyDate + "]";
+	}
+	
 
 }

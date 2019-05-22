@@ -50,16 +50,26 @@ public class DevController {
 	 */
 	@RequestMapping(value = "/submit", method = RequestMethod.POST)
 	public String login(Dev_user dev_user, Model model, HttpSession session) {
-		Dev_user dev_user2 = this.dev_userService.findDev_user(dev_user);
-		if (dev_user2 != null) {
-			session.setAttribute("dev_userSession", dev_user2);
-			// System.out.println(session.getAttribute("user"));
-			// model.addAttribute("user",user2);
-			return "frame";
-		} else {
-			model.addAttribute("error", "您输入的账号密码错误请重新输入");
-		}
-		return "forward:/index.jsp";
+		System.out.println(dev_user);
+		session.setAttribute("devUserSession", dev_user);
+		return "developer/main";
+		// Dev_user dev_user2 = this.dev_userService.findDev_user(dev_user);
+		// if (dev_user2 != null) {
+		// session.setAttribute("dev_userSession", dev_user2);
+		// // System.out.println(session.getAttribute("user"));
+		// // model.addAttribute("user",user2);
+		// return "frame";
+		// } else {
+		// model.addAttribute("error", "您输入的账号密码错误请重新输入");
+		// }
+		// return "forward:/index.jsp";
+	}
+
+	@RequestMapping("/logout")
+	public String logout(Model model, HttpSession session) {
+		session.removeAttribute("userSession");
+		// redirect转发，跳转到index.jsp界面
+		return "forward:/";
 	}
 
 }

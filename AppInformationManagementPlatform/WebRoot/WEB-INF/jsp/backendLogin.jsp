@@ -9,7 +9,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <head>
     <base href="<%=basePath%>">
     
-    <title>APP开发者平台</title>
+    <title>后台管理系统</title>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <!-- Meta, title, CSS, favicons, etc. -->
     <meta charset="utf-8">
@@ -40,19 +40,20 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
         <div class="animate form login_form">
           <section class="login_content">
             <form 
-            action="${pageContext.request.contextPath }/dev/submit" 
+            action="${pageContext.request.contextPath }/manager/submit" 
             name="actionForm" id="actionForm"  method="post">
-              <h1>APP开发者平台</h1>
+              <h1>后台管理系统</h1>
               <div>
-                <input type="text" class="form-control" id="devName" name="devName" placeholder="用户名" required="" />
+              
+                <input type="text" class="form-control" name="userName" id="userName" placeholder="用户名" required="" />
               </div>
               <div>
-                <input type="password" class="form-control" id="devPassword" name="devPassword" placeholder="密码" required="" />
+                <input type="password" class="form-control" name="userPassword" id="userPassword" placeholder="密码" required="" />
               </div>
               <span>${error }</span>
-             <div>
+              <div>
                <input class="btn btn-default submit" type="submit"  value="登录"/>
-               <input class="btn btn-default submit" type="reset" value="重置"/> 
+                    <input class="btn btn-default submit" type="reset" value="重置"/> 
                 
                <!--  <a class="reset_pass" href="#">忘记密码啦?</a> -->
               </div>
