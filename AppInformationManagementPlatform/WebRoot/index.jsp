@@ -12,7 +12,7 @@
     <title>后台管理系统</title>
 
     <!-- Bootstrap -->
-    <link href="${pageContext.request.contextPath }/statics/css/bootstrap.min.css" rel="stylesheet">
+    <link href="${pageContext.request.contextPath }/statics/css/bootstraps/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link href="${pageContext.request.contextPath }/statics/css/font-awesome.min.css" rel="stylesheet">
     <!-- NProgress -->
@@ -28,10 +28,10 @@
     <div class="login_wrapper">
       <h1>APP信息管理平台</h1>
       <div>
-      <a href="manager/login" class="btn btn-link">后台管理系统 入口</a>
+      <a href="${pageContext.request.contextPath }/manager/login" class="btn btn-link">后台管理系统 入口</a>
       </div>
       <div>
-      <a href="dev/login" class="btn btn-link">开发者平台 入口</a>
+      <a href="${pageContext.request.contextPath }/dev/login" class="btn btn-link">开发者平台 入口</a>
       </div>
     </div>
   </body>

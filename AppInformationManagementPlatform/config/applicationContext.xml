@@ -34,7 +34,7 @@
 	
 	<!-- 通过mapper代理开发  basePackage指映射接口文件所在包路径，指定后会自动扫描该包下的所有文件-->
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
-		<property name="basePackage" value="com.m.crm.dao"></property>
+		<property name="basePackage" value="com.app"></property>
 	</bean>
 	
 	<!-- 配置事务管理器-->

@@ -3,6 +3,6 @@
 <configuration>
 <!-- 配置别名 -->
 	<typeAliases >
-		<package name="com.m"/>
+		<package name="com.app"/>
 	</typeAliases>
 </configuration>

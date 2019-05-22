@@ -12,7 +12,7 @@
         http://www.springframework.org/schema/context
 		http://www.springframework.org/schema/context/spring-context.xsd">
 	<!-- 开启注解 -->
-	<context:component-scan base-package="com.m" />
+	<context:component-scan base-package="com.app" />
 	
 	<!-- 配置注解驱动,提供对json注解的支持 -->
 	<mvc:annotation-driven/> 
