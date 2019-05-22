@@ -1,5 +1,5 @@
 # App
-There is our App Information Management Platform
+There is App Information Management Platform
 ==================================
 :computer:service：Tomcat8.5 
 IDE: MyEclipse CI7.
