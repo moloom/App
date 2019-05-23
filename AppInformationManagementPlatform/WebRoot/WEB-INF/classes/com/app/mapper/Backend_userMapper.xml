@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.app.mapper.Backend_userMapper">
+	<!-- 验证用户输入的用户名和密码是否正确 -->
+	<!-- 修改密码时，先验证输入的密码是否正确 -->
+	<select id="findBackend_user" resultType="com.app.pojo.Backend_user"
+		parameterType="com.app.pojo.Backend_user">
+		select * from Backend_user where
+		userPassword=#{userPassword} and
+		userCode=#{userCode}
+	</select>
+</mapper>

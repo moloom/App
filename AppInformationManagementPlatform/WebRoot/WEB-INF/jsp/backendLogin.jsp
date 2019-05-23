@@ -45,7 +45,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
               <h1>后台管理系统</h1>
               <div>
               
-                <input type="text" class="form-control" name="userName" id="userName" placeholder="用户名" required="" />
+                <input type="text" class="form-control" name="userCode" id="userCode" placeholder="用户名" required="" />
               </div>
               <div>
                 <input type="password" class="form-control" name="userPassword" id="userPassword" placeholder="密码" required="" />

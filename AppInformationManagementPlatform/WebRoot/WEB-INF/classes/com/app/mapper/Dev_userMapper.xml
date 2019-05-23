@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.app.mapper.Dev_userMapper">
+
+	<!-- 添加 时间默认运行此sql的时间 -->
+	<!-- <insert id="addUser" parameterType="com.app.pojo.Dev_user">
+		insert into smbms_user(
+		id,
+		userCode,
+		userName,
+		userPassword,
+		gender,
+		birthday,
+		phone,
+		address,
+		userRole,
+		createdBy,
+		creationDate
+		)
+		values (
+		#{id},
+		#{userCode},
+		#{userName},
+		#{userPassword},
+		#{gender},
+		#{birthday},
+		#{phone},
+		#{address},
+		#{userRole},
+		#{createdBy},
+		sysdate
+		)
+	</insert> -->
+
+	<!-- 删除 -->
+	<!-- <delete id="deleteUser" parameterType="int">
+		delete from
+		SMBMS_USER
+		WHERE
+		ID=#{id}
+	</delete>
+ -->
+	<!--修改用户密码 -->
+	<!-- <update id="userUpdataPwd" parameterType="com.app.pojo.Dev_user">
+		update smbms_user
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="userPassword !=null">userPassword=#{userPassword},</if>
+			<if test="modifyBy !=null">modifyBy=#{modifyBy},</if>
+			modifyDate=sysdate,
+		</trim>
+	</update> -->
+
+	<!-- 更新用户数据 -->
+	<!-- <update id="updata" parameterType="com.app.pojo.Dev_user">
+		update smbms_user <set> <if test="userCode !=null">userCode=#{userCode},</if> 
+			<if test="userName !=null">userName=#{userName},</if> <if test="userPassword 
+			!=null">userPassword=#{userPassword},</if> <if test="gender !=null">gender=#{gender},</if> 
+			<if test="birthday !=null">birthday=#{birthday},</if> <if test="phone !=null">phone=#{phone},</if> 
+			<if test="address !=null">address=#{address},</if> <if test="userRole !=null">userRole=#{userRole},</if> 
+			<if test="modifyBy !=null">modifyBy=#{modifyBy},</if> modifyDate=sysdate, 
+			<if test="userCode !=null">userCode=#{userCode},</if> </set> where id=#{id}
+
+		update smbms_user
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="userCode !=null">userCode=#{userCode},</if>
+			<if test="userName !=null">
+				<if test="userName !=''">userName=#{userName},</if>
+			</if>
+			<if test="userPassword !=null">userPassword=#{userPassword},</if>
+			<if test="gender !=null">gender=#{gender},</if>
+			<if test="birthday !=null">birthday=#{birthday},</if>
+			<if test="phone !=null">
+				<if test="phone !=''">phone=#{phone},</if>
+			</if>
+			<if test="address !=null">
+				<if test="address !=''">address=#{address},</if>
+			</if>
+			<if test="userRole !=null">userRole=#{userRole},</if>
+			<if test="modifyBy !=null">modifyBy=#{modifyBy},</if>
+			modifyDate=sysdate,
+		</trim>
+
+	</update> -->
+
+
+	<!-- 验证用户输入的用户名和密码是否正确 -->
+	<!-- 修改密码时，先验证输入的密码是否正确 -->
+	<select id="findDev_user" resultType="com.app.pojo.Dev_user"
+		parameterType="com.app.pojo.Dev_user">
+		select * from Dev_user where
+		devPassword=#{devPassword} and
+		devName=#{devName}
+	</select>
+	<!-- -->
+	<!-- <select id="findAll" resultMap="userList">
+		select u.*,r.roleName from
+		smbms_user u,smbms_role r
+	</select> -->
+
+	<!-- 分页功能 -->
+	<!-- 查询user和roleName -->
+	<!-- <select id="getUserListByMap" resultMap="userList"
+		parameterType="java.util.Map">
+		拼接字符串，使其可以模糊查询
+		<bind name="user_name" value="'%'+userName+'%'" />
+		select * from
+		(select ROWNUM rn,u.* from
+		(select u.*,r.roleName from
+		SMBMS_USER u,smbms_role r
+		where
+		1=1
+		<if test="userRole !=null and userRole !=''">
+			and userRole=#{userRole}
+		</if>
+		<if test="userName !=null and userName !=''">
+			and userName like #{user_name}
+		</if>
+		and u.userRole=r.id
+		order by u.creationDate desc
+		) u where rownum
+		&lt;=#{pageMax}
+		)
+		where rn
+		&gt;
+		#{pageMin}
+	</select>
+ -->
+
+	<!-- 查询角色名和user列表 的记录条数，，和getUserByMap嵌套使用 -->
+	<!-- <select id="countByMap" resultType="int" parameterType="java.util.Map">
+		拼接字符串，使其可以模糊查询
+		<bind name="user_name" value="'%'+userName+'%'" />
+		select count(*) from
+		SMBMS_USER
+		where 1=1
+		<if test="userRole !=null and userRole !=''">
+			and userRole=#{userRole}
+		</if>
+		<if test="userName !=null and userName !=''">
+			and userName like #{user_name}
+		</if>
+
+	</select> -->
+
+	<!-- 查询用户详细信息 -->
+	<!-- 查询了更新者名字和创建者名字 -->
+	<!-- <select id="getUserById" parameterType="String" resultMap="userLists">
+		select u.*,r.roleName from SMBMS_USER u,SMBMS_ROLE r where u.id=#{id} 
+			and u.userRole=r.id
+
+		SELECT
+		u.USERCODE,u.USERNAME,u.GENDER,u.BIRTHDAY,u.PHONE,u.ADDRESS,u.MODIFYDATE,u.CREATIONDATE,
+		(select userName from SMBMS_USER where id=
+		(select CREATEDBY from
+		SMBMS_USER where id=#{id})) as CREATEDBYNAME,
+		(select userName from
+		SMBMS_USER where id=
+		(select MODIFYBY from SMBMS_USER where id=#{id}))
+		as MODIFYBYNAME,
+		r.ROLENAME
+		from SMBMS_USER u,SMBMS_ROLE r where
+		u.id=#{id}
+		and u.USERROLE=r.ID
+	</select>
+
+	<select id="ucexist" parameterType="String" resultType="User">
+		select *
+		from SMBMS_USER where userName=#{userName}
+	</select>
+
+
+	<resultMap type="com.app.pojo.Dev_user" id="userList">
+		<id column="id" property="id" />
+		<result column="userCode" property="userCode" />
+		<result column="userName" property="userName" />
+		<result column="gender" property="gender" />
+		<result column="birthday" property="birthday" />
+		<result column="phone" property="phone" />
+		<result column="address" property="address" />
+		<result column="roleName" property="userRoleName" />
+		<result column="userRole" property="userRole" />
+	</resultMap>
+
+	<resultMap type="com.app.pojo.Dev_user" id="userLists">
+		<id column="id" property="id" />
+		<result column="userCode" property="userCode" />
+		<result column="userName" property="userName" />
+		<result column="gender" property="gender" />
+		<result column="birthday" property="birthday" />
+		<result column="phone" property="phone" />
+		<result column="address" property="address" />
+		<result column="roleName" property="userRoleName" />
+		<result column="modifyByName" property="modifyByName" />
+		<result column="createdByName" property="createdByName" />
+	</resultMap> -->
+</mapper>
