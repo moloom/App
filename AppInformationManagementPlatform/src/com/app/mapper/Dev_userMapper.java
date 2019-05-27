@@ -3,7 +3,10 @@ package com.app.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.app.pojo.App_category;
 import com.app.pojo.App_info;
+import com.app.pojo.Data_appStatus;
+import com.app.pojo.Data_flatForm;
 import com.app.pojo.Dev_user;
 
 public interface Dev_userMapper {
@@ -17,11 +20,39 @@ public interface Dev_userMapper {
 	public Dev_user findDev_user(Dev_user dev_user);
 
 	/**
-	 * 查询所有的用户列表
+	 * 查询所有app状态列表
 	 * 
 	 * @return
 	 */
-	public List<Dev_user> findAll();
+	public List<Data_appStatus> findAllOfAppStatus();
+
+	/**
+	 * 查询所有的所属平台
+	 * 
+	 * @return
+	 */
+	public List<Data_flatForm> findAllOfFlatForm();
+
+	/**
+	 * 查询categoryLevel1
+	 * 
+	 * @return
+	 */
+	public List<App_category> findAllOfCategoryLevel1();
+
+	/**
+	 * 查询categoryLevel2
+	 * 
+	 * @return
+	 */
+	public List<App_category> findOfCategoryLevels(Integer id);
+
+	/**
+	 * 查询categoryLevel3
+	 * 
+	 * @return
+	 */
+	public List<App_category> findAllOfCategoryLevel3();
 
 	/**
 	 * 根据条件查询记录条数

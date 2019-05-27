@@ -76,4 +76,12 @@ public class App_category {
 		this.modifyDate = modifyDate;
 	}
 
+	@Override
+	public String toString() {
+		return "App_category [id=" + id + ", categoryCode=" + categoryCode + ", categoryName=" + categoryName
+				+ ", parentId=" + parentId + ", createdBy=" + createdBy + ", creationDate=" + creationDate
+				+ ", modifyBy=" + modifyBy + ", modifyDate=" + modifyDate + "]";
+	}
+	
+
 }

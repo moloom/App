@@ -7,24 +7,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.mapper.Dev_userMapper;
+import com.app.pojo.App_category;
 import com.app.pojo.App_info;
+import com.app.pojo.Data_appStatus;
+import com.app.pojo.Data_flatForm;
 import com.app.pojo.Dev_user;
 import com.app.service.Dev_userService;
 
 @Service("dev_userService")
 public class Dev_userServiceImpl implements Dev_userService {
-	
+
 	@Autowired
 	private Dev_userMapper dev_userMapper;
 
 	public Dev_user findDev_user(Dev_user dev_user) {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.findDev_user(dev_user);
-	}
-
-	public List<Dev_user> findAll() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public int countByMap(Map<String, String> map) {
@@ -67,5 +65,29 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return 0;
 	}
 
+	public List<Data_appStatus> findAllOfAppStatus() {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findAllOfAppStatus();
+	}
+
+	public List<Data_flatForm> findAllOfFlatForm() {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findAllOfFlatForm();
+	}
+
+	public List<App_category> findAllOfCategoryLevel1() {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findAllOfCategoryLevel1();
+	}
+
+	public List<App_category> findOfCategoryLevels(Integer id) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findOfCategoryLevels(id);
+	}
+
+	public List<App_category> findAllOfCategoryLevel3() {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findAllOfCategoryLevel3();
+	}
 
 }

@@ -48,9 +48,44 @@
 		and
 		devName=#{devName}
 	</select>
-	<!-- -->
-	<!-- <select id="findAll" resultMap="userList"> select u.*,r.roleName from 
-		smbms_user u,smbms_role r </select> -->
+	
+	<!-- 查询所有的app状态列表-->
+	<select id="findAllOfAppStatus" resultType="com.app.pojo.Data_appStatus"> 
+		select * from 
+		DATA_APPSTATUS 
+		
+	</select> 
+	<!-- 查询所有的app状态列表-->
+	<select id="findAllOfFlatForm" resultType="com.app.pojo.Data_flatForm"> 
+		select * from 
+		DATA_FLATFORM 
+		
+	</select> 
+	
+	<!-- 查询categoryLevel1-->
+	<select id="findAllOfCategoryLevel1" resultType="com.app.pojo.App_category"> 
+		select * from 
+		APP_CATEGORY where parentID=0
+		
+	</select> 
+	
+	<!-- 查询categoryLevel2-->
+	<select id="findOfCategoryLevels" resultType="com.app.pojo.App_category" parameterType="int"> 
+		select * from 
+		APP_CATEGORY where parentID=#{id}
+		
+	</select> 
+	
+	<!-- 查询categoryLevel3-->
+	<select id="findAllOfCategoryLevel3" resultType="com.app.pojo.App_category"> 
+		select * from 
+		APP_CATEGORY where parentID=0
+		
+	</select> 
+	
+	
+	
+	
 
 	<!-- 分页功能 -->
 	<!-- 查询App_info -->
