@@ -28,6 +28,65 @@ public class App_info {
 	private String logoLocPath;
 	private Integer versionId;
 
+	// 外加字段
+	private String flatformName;// 所属平台名称
+	// App所属分类，一级分类，二级分类，三级分类 名称
+	private String categoryLevel1Name;
+	private String categoryLevel2Name;
+	private String categoryLevel3Name;
+
+	private String statusName;// app状态名称
+
+	private String versionNo;// 最新版本号
+
+	public String getFlatformName() {
+		return flatformName;
+	}
+
+	public void setFlatformName(String flatformName) {
+		this.flatformName = flatformName;
+	}
+
+	public String getCategoryLevel2Name() {
+		return categoryLevel2Name;
+	}
+
+	public void setCategoryLevel2Name(String categoryLevel2Name) {
+		this.categoryLevel2Name = categoryLevel2Name;
+	}
+
+	public String getCategoryLevel3Name() {
+		return categoryLevel3Name;
+	}
+
+	public void setCategoryLevel3Name(String categoryLevel3Name) {
+		this.categoryLevel3Name = categoryLevel3Name;
+	}
+
+	public String getCategoryLevel1Name() {
+		return categoryLevel1Name;
+	}
+
+	public void setCategoryLevel1Name(String categoryLevel1Name) {
+		this.categoryLevel1Name = categoryLevel1Name;
+	}
+
+	public String getStatusName() {
+		return statusName;
+	}
+
+	public void setStatusName(String statusName) {
+		this.statusName = statusName;
+	}
+
+	public String getVersionNo() {
+		return versionNo;
+	}
+
+	public void setVersionNo(String versionNo) {
+		this.versionNo = versionNo;
+	}
+
 	public Integer getId() {
 		return id;
 	}
@@ -218,6 +277,21 @@ public class App_info {
 
 	public void setVersionId(Integer versionId) {
 		this.versionId = versionId;
+	}
+
+	@Override
+	public String toString() {
+		return "App_info [id=" + id + ", softwareName=" + softwareName + ", APKName=" + APKName + ", supportRom="
+				+ supportRom + ", interfaceLanguage=" + interfaceLanguage + ", softwareSize=" + softwareSize
+				+ ", updateDate=" + updateDate + ", devId=" + devId + ", appInfo=" + appInfo + ", status=" + status
+				+ ", onSaleDate=" + onSaleDate + ", offSaleDate=" + offSaleDate + ", flatfromId=" + flatfromId
+				+ ", categoryLevel3=" + categoryLevel3 + ", downloads=" + downloads + ", createdBy=" + createdBy
+				+ ", creationDate=" + creationDate + ", modifyBy=" + modifyBy + ", modifyDate=" + modifyDate
+				+ ", categoryLevel1=" + categoryLevel1 + ", categoryLevel2=" + categoryLevel2 + ", logoPicPath="
+				+ logoPicPath + ", logoLocPath=" + logoLocPath + ", versionId=" + versionId + ", flatformName="
+				+ flatformName + ", categoryLevel1Name=" + categoryLevel1Name + ", categoryLevel2Name="
+				+ categoryLevel2Name + ", categoryLevel3Name=" + categoryLevel3Name + ", statusName=" + statusName
+				+ ", versionNo=" + versionNo + "]";
 	}
 
 }

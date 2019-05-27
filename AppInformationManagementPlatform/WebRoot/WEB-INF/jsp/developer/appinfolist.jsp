@@ -189,7 +189,7 @@
 										<td>${appInfo.categoryLevel1Name } -> ${appInfo.categoryLevel2Name } -> ${appInfo.categoryLevel3Name }</td>
 										<td><span id="appInfoStatus${appInfo.id}">${appInfo.statusName }</span></td>
 										<td>${appInfo.downloads }</td>
-										<td>${appInfo.versionNo }</td>
+										<td>${appInfo.versionNo }</td> 
 										<td>
 										
 										
@@ -199,7 +199,7 @@
                         <span class="caret"></span>
                         <span class="sr-only">Toggle Dropdown</span>
                       </button>
-                      <ul class="dropdown-menu" role="menu">
+                      <%-- <ul class="dropdown-menu" role="menu">
                         <li>
                         	<c:choose>
 											<c:when test="${appInfo.status == 2 || appInfo.status == 5}">
@@ -222,7 +222,7 @@
 											data-toggle="tooltip" data-placement="top" title="" data-original-title="修改APP基础信息">修改</a></li>
                         <li><a  class="viewApp" appinfoid=${appInfo.id }  data-toggle="tooltip" data-placement="top" title="" data-original-title="查看APP基础信息以及全部版本信息">查看</a></li>
 						<li><a  class="deleteApp" appinfoid=${appInfo.id }  appsoftwarename=${appInfo.softwareName } data-toggle="tooltip" data-placement="top" title="" data-original-title="删除APP基础信息以及全部版本信息">删除</a></li>
-                      </ul>
+                      </ul> --%>
                     </div>
 										</td>
 									</tr>

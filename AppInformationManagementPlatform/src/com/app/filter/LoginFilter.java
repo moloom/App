@@ -55,14 +55,14 @@ public class LoginFilter implements Filter {
 		String uriPath = servletRequest.getServletPath();
 		System.out.println(uriPath);
 		// 从session里取用户
-		Dev_user dev_user = (Dev_user) session.getAttribute("userSession");
-		System.out.println("-----------\n userSession :" + dev_user);
+		Dev_user dev_user = (Dev_user) session.getAttribute("devUserSession");
+		System.out.println("\n devUserSession :" + dev_user);
 		// 如果是login , , modify、,"/user/logOut.html"放行
 		String[] strs = { "/login", "/index.jsp" };
 		for (String string : strs) {
 			// string=servletRequest.getContextPath()+"/"+string;
 			// string="/"+string;
-			System.out.println(string);
+			// System.out.println(string);
 			if (uriPath.equals(string)) {
 				chain.doFilter(request, response);
 				return;

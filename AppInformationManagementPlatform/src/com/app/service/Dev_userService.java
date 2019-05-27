@@ -3,6 +3,7 @@ package com.app.service;
 import java.util.List;
 import java.util.Map;
 
+import com.app.pojo.App_info;
 import com.app.pojo.Dev_user;
 
 public interface Dev_userService {
@@ -36,7 +37,7 @@ public interface Dev_userService {
 	 * @param map
 	 * @return
 	 */
-	public List<Dev_user> getDev_userListByMap(Map<String, String> map);
+	public List<App_info> getApp_infoListByMap(Map<String, String> map);
 
 	/**
 	 * 添加用户

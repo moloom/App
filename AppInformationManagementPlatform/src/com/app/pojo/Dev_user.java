@@ -10,6 +10,7 @@ public class Dev_user {
 	private String devEmail;
 	private String devInfo;
 	private Integer createdBy;
+	//@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date creationDate;
 	private Integer modifyBy;
 	private Date modifyDate;

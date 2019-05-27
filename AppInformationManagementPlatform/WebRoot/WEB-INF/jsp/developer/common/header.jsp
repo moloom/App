@@ -81,7 +81,7 @@
 										class="fa fa-chevron-down"></span>
 								</a>
 									<ul class="nav child_menu">
-										<li><a href="${pageContext.request.contextPath }/dev/flatform/app/list">APP维护</a>
+										<li><a href="${pageContext.request.contextPath }/dev/flatFormAppList.html">APP维护</a>
 										</li>
 										<li><a href="${pageContext.request.contextPath }/dev/flatform/app/public">APP发布</a>
 										</li>

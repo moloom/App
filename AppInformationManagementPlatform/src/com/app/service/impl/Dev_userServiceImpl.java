@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.app.mapper.Dev_userMapper;
+import com.app.pojo.App_info;
 import com.app.pojo.Dev_user;
 import com.app.service.Dev_userService;
 
@@ -28,12 +29,12 @@ public class Dev_userServiceImpl implements Dev_userService {
 
 	public int countByMap(Map<String, String> map) {
 		// TODO Auto-generated method stub
-		return 0;
+		return this.dev_userMapper.countByMap(map);
 	}
 
-	public List<Dev_user> getDev_userListByMap(Map<String, String> map) {
+	public List<App_info> getApp_infoListByMap(Map<String, String> map) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.dev_userMapper.getApp_infoListByMap(map);
 	}
 
 	public int addDev_user(Dev_user dev_user) {
