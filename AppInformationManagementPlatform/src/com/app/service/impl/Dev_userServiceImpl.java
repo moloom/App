@@ -45,11 +45,6 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return null;
 	}
 
-	public Dev_user ucexist(String dev_userName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public int deleteDev_user(Integer id) {
 		// TODO Auto-generated method stub
 		return 0;
@@ -85,9 +80,9 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return this.dev_userMapper.findOfCategoryLevels(id);
 	}
 
-	public List<App_category> findAllOfCategoryLevel3() {
+	public App_info verifyAPKName(String APKName) {
 		// TODO Auto-generated method stub
-		return this.dev_userMapper.findAllOfCategoryLevel3();
+		return this.dev_userMapper.verifyAPKName(APKName);
 	}
 
 }

@@ -48,13 +48,6 @@ public interface Dev_userMapper {
 	public List<App_category> findOfCategoryLevels(Integer id);
 
 	/**
-	 * 查询categoryLevel3
-	 * 
-	 * @return
-	 */
-	public List<App_category> findAllOfCategoryLevel3();
-
-	/**
 	 * 根据条件查询记录条数
 	 * 
 	 * @param map
@@ -87,12 +80,12 @@ public interface Dev_userMapper {
 	public Dev_user getDev_userById(String id);
 
 	/**
-	 * Ajax异步验证 把前端输入的Dev_userName拿去查询数据库里是否存在
+	 * Ajax异步验证 把前端输入的APKName拿去查询数据库里是否存在
 	 * 
-	 * @param dev_userName
+	 * @param APKName
 	 * @return
 	 */
-	public Dev_user ucexist(String dev_userName);
+	public App_info verifyAPKName(String APKName);
 
 	/**
 	 * 删除用户

@@ -48,44 +48,45 @@
 		and
 		devName=#{devName}
 	</select>
-	
-	<!-- 查询所有的app状态列表-->
-	<select id="findAllOfAppStatus" resultType="com.app.pojo.Data_appStatus"> 
-		select * from 
-		DATA_APPSTATUS 
-		
-	</select> 
-	<!-- 查询所有的app状态列表-->
-	<select id="findAllOfFlatForm" resultType="com.app.pojo.Data_flatForm"> 
-		select * from 
-		DATA_FLATFORM 
-		
-	</select> 
-	
-	<!-- 查询categoryLevel1-->
-	<select id="findAllOfCategoryLevel1" resultType="com.app.pojo.App_category"> 
-		select * from 
+
+	<!-- 查询所有的app状态列表 -->
+	<select id="findAllOfAppStatus" resultType="com.app.pojo.Data_appStatus">
+		select * from
+		DATA_APPSTATUS
+
+	</select>
+	<!-- 查询所有的app所属平台 -->
+	<select id="findAllOfFlatForm" resultType="com.app.pojo.Data_flatForm">
+		select * from
+		DATA_FLATFORM
+
+	</select>
+
+	<!-- 查询categoryLevel1 -->
+	<select id="findAllOfCategoryLevel1" resultType="com.app.pojo.App_category">
+		select * from
 		APP_CATEGORY where parentID=0
-		
-	</select> 
-	
-	<!-- 查询categoryLevel2-->
-	<select id="findOfCategoryLevels" resultType="com.app.pojo.App_category" parameterType="int"> 
-		select * from 
+
+	</select>
+
+	<!-- 查询categoryLevel2,3 -->
+	<select id="findOfCategoryLevels" resultType="com.app.pojo.App_category"
+		parameterType="int">
+		select * from
 		APP_CATEGORY where parentID=#{id}
-		
-	</select> 
-	
-	<!-- 查询categoryLevel3-->
-	<select id="findAllOfCategoryLevel3" resultType="com.app.pojo.App_category"> 
-		select * from 
-		APP_CATEGORY where parentID=0
-		
-	</select> 
-	
-	
-	
-	
+
+	</select>
+
+
+	<!--Ajax异步验证 把前端输入的APKName拿去查询数据库里是否存在 -->
+	<select id="verifyAPKName" parameterType="String" resultType="com.app.pojo.App_info">
+		select *
+		from App_info where APKName=#{APKName}
+	</select>
+
+
+
+
 
 	<!-- 分页功能 -->
 	<!-- 查询App_info -->
@@ -95,15 +96,19 @@
 		<bind name="softwarename" value="'%'+softwareName+'%'" />
 		select * from
 		(select ROWNUM rn,u.* from
-		(select a.*,f.FLATFORMNAME,s.STATUSNAME,v.VERSIONNO,
-		(SELECT CATEGORYNAME FROM APP_INFO ai,APP_CATEGORY ac 
-		where ai.CATEGORYLEVEL1=ac.ID) as CATEGORYLEVEL1NAME,
+		(select
+		a.*,f.FLATFORMNAME,s.STATUSNAME,v.VERSIONNO,
 		(SELECT CATEGORYNAME FROM
-		APP_INFO ai,APP_CATEGORY ac 
+		APP_INFO ai,APP_CATEGORY ac
+		where ai.CATEGORYLEVEL1=ac.ID) as CATEGORYLEVEL1NAME,
+		(SELECT CATEGORYNAME
+		FROM
+		APP_INFO ai,APP_CATEGORY ac
 		where ai.CATEGORYLEVEL2=ac.ID) as CATEGORYLEVEL2NAME,
-		(SELECT CATEGORYNAME FROM 
-		APP_INFO ai,APP_CATEGORY ac 
-		where ai.CATEGORYLEVEL3=ac.ID) as CATEGORYLEVEL3NAME 
+		(SELECT CATEGORYNAME
+		FROM
+		APP_INFO ai,APP_CATEGORY ac
+		where ai.CATEGORYLEVEL3=ac.ID) as CATEGORYLEVEL3NAME
 		from APP_INFO a,DATA_FLATFORM f,DATA_APPSTATUS s,APP_VERSION v
 		where
 		1=1
@@ -113,8 +118,8 @@
 		<if test="status !=null and status !=''">
 			and a.status = #{status}
 		</if>
-		<if test="flatfromId !=null and flatfromId !=''">
-			and a.userRole = #{userRole}
+		<if test="flatformId !=null and flatformId !=''">
+			and a.flatformId = #{flatformId}
 		</if>
 		<if test="categoryLevel1 !=null and categoryLevel1 !=''">
 			and a.categoryLevel1 = #{categoryLevel1}
@@ -128,7 +133,8 @@
 		and a.FLATFORMID=f.ID
 		and a.STATUS=s.id
 		and a.VERSIONID=v.ID
-		order by a.creationDate desc
+		order by
+		a.creationDate desc
 		) u where rownum
 		&lt;=#{pageMax}
 		)
@@ -152,8 +158,8 @@
 		<if test="status !=null and status !=''">
 			and status = #{status}
 		</if>
-		<if test="flatfromId !=null and flatfromId !=''">
-			and userRole = #{userRole}
+		<if test="flatformId !=null and flatformId !=''">
+			and flatformId = #{flatformId}
 		</if>
 		<if test="categoryLevel1 !=null and categoryLevel1 !=''">
 			and categoryLevel1 = #{categoryLevel1}

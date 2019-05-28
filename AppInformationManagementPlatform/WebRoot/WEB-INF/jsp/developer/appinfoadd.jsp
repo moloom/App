@@ -19,7 +19,9 @@
          </div>
        </div> -->
            <div class="clearfix"></div>
-        <form class="form-horizontal form-label-left" action="appinfoaddsave" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal form-label-left" action="appinfoSave.html" method="POST" enctype="multipart/form-data">
+        <!-- 获取当前的用户id为创建者id -->
+        <input type="hidden" id ="createdBy" name ="createdBy"  value="${devUserSession.id}"/>
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">软件名称 <span class="required">*</span>
             </label>
@@ -121,7 +123,7 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">LOGO图片 <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-            <input type="file" class="form-control col-md-7 col-xs-12" name="a_logoPicPath"  required="required" id="a_logoPicPath"/>
+            <input type="file" class="form-control col-md-7 col-xs-12" name="attachs"  required="required" id="attachs"/>
             ${fileUploadError }
             </div>
           </div>

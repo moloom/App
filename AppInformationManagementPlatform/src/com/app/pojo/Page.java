@@ -10,7 +10,7 @@ public class Page {
 		return totalCount;
 	}
 
-//	当设置多少条记录时，计算有几页，并保存到totalPageCount
+	// 当设置多少条记录时，计算有几页，并保存到totalPageCount
 	public void setTotalCount(Integer totalCount) {
 		this.totalCount = totalCount;
 		if (totalCount > 10) {
@@ -21,6 +21,8 @@ public class Page {
 			}
 		} else if (totalCount <= 10 && totalCount > 0) {
 			this.totalPageCount = 1;
+		} else {
+			this.currentPageNo = 0;
 		}
 	}
 

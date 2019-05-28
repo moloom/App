@@ -15,7 +15,7 @@ public class App_info {
 	private Integer status;
 	private Date onSaleDate;
 	private Date offSaleDate;
-	private Integer flatfromId;
+	private Integer flatformId;
 	private Integer categoryLevel3;
 	private Integer downloads;
 	private Integer createdBy;
@@ -183,12 +183,13 @@ public class App_info {
 		this.offSaleDate = offSaleDate;
 	}
 
-	public Integer getFlatfromId() {
-		return flatfromId;
+
+	public Integer getFlatformId() {
+		return flatformId;
 	}
 
-	public void setFlatfromId(Integer flatfromId) {
-		this.flatfromId = flatfromId;
+	public void setFlatformId(Integer flatformId) {
+		this.flatformId = flatformId;
 	}
 
 	public Integer getCategoryLevel3() {
@@ -284,7 +285,7 @@ public class App_info {
 		return "App_info [id=" + id + ", softwareName=" + softwareName + ", APKName=" + APKName + ", supportRom="
 				+ supportRom + ", interfaceLanguage=" + interfaceLanguage + ", softwareSize=" + softwareSize
 				+ ", updateDate=" + updateDate + ", devId=" + devId + ", appInfo=" + appInfo + ", status=" + status
-				+ ", onSaleDate=" + onSaleDate + ", offSaleDate=" + offSaleDate + ", flatfromId=" + flatfromId
+				+ ", onSaleDate=" + onSaleDate + ", offSaleDate=" + offSaleDate + ", flatformId=" + flatformId
 				+ ", categoryLevel3=" + categoryLevel3 + ", downloads=" + downloads + ", createdBy=" + createdBy
 				+ ", creationDate=" + creationDate + ", modifyBy=" + modifyBy + ", modifyDate=" + modifyDate
 				+ ", categoryLevel1=" + categoryLevel1 + ", categoryLevel2=" + categoryLevel2 + ", logoPicPath="
