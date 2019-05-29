@@ -66,9 +66,9 @@
 									<td>${appVersion.versionSize }</td>
 									<td>${appVersion.publishStatusName }</td>
 									<td>
-									<a href="${appVersion.downloadLink }">${appVersion.apkFileName }</a>
+									<a href="${appVersion.APKLocPath }">${appVersion.APKFileName }</a>
 									</td>
-									<td><fmt:formatDate value="${appVersion.modifyDate }" pattern="yyyy-MM-dd"/></td>
+									<td><fmt:formatDate value="${appVersion.modifyDate }" pattern="yyyy-MM-dd HH:mm"/></td>
 								</tr>
 							</c:forEach>
 						</tbody>

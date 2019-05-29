@@ -16,11 +16,9 @@
 		supportRom,
 		interfaceLanguage,
 		softwareSize,
-
 		devId,
 		appInfo,
 		status,
-
 		flatformId,
 		categoryLevel3,
 		downloads,
@@ -38,10 +36,9 @@
 		#{supportRom},
 		#{interfaceLanguage},
 		#{softwareSize},
-		#{createdBy},
+		#{devId},
 		#{appInfo},
 		#{status},
-
 		#{flatformId},
 		#{categoryLevel3},
 		#{downloads},
@@ -54,6 +51,36 @@
 		sysdate )
 	</insert>
 
+	<!-- 增加app版本信息 -->
+	<insert id="saveAppVersion" parameterType="com.app.pojo.App_version">
+		insert
+		into
+		App_version(
+		id,
+		appId,
+		versionNo,
+		versionInfo,
+		publishStatus,
+		versionSize,
+		APKLocPath,
+		APKFileName,
+		createdBy,
+		creationDate )
+		values
+		( #{id},
+		#{appId},
+		#{versionNo},
+		#{versionInfo},
+		#{publishStatus},
+		#{versionSize},
+		#{APKLocPath},
+		#{APKFileName},
+		#{createdBy},
+		sysdate )
+	</insert>
+
+
+
 	<!-- 删除 -->
 	<!-- <delete id="deleteUser" parameterType="int"> delete from SMBMS_USER 
 		WHERE ID=#{id} </delete> -->
@@ -64,22 +91,43 @@
 		!=null">modifyBy=#{modifyBy},</if> modifyDate=sysdate, </trim> </update> -->
 
 	<!-- 更新用户数据 -->
-	<!-- <update id="updata" parameterType="com.app.pojo.Dev_user"> update smbms_user 
-		<set> <if test="userCode !=null">userCode=#{userCode},</if> <if test="userName 
-		!=null">userName=#{userName},</if> <if test="userPassword !=null">userPassword=#{userPassword},</if> 
-		<if test="gender !=null">gender=#{gender},</if> <if test="birthday !=null">birthday=#{birthday},</if> 
-		<if test="phone !=null">phone=#{phone},</if> <if test="address !=null">address=#{address},</if> 
-		<if test="userRole !=null">userRole=#{userRole},</if> <if test="modifyBy 
-		!=null">modifyBy=#{modifyBy},</if> modifyDate=sysdate, <if test="userCode 
-		!=null">userCode=#{userCode},</if> </set> where id=#{id} update smbms_user 
-		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}"> <if test="userCode 
-		!=null">userCode=#{userCode},</if> <if test="userName !=null"> <if test="userName 
-		!=''">userName=#{userName},</if> </if> <if test="userPassword !=null">userPassword=#{userPassword},</if> 
-		<if test="gender !=null">gender=#{gender},</if> <if test="birthday !=null">birthday=#{birthday},</if> 
-		<if test="phone !=null"> <if test="phone !=''">phone=#{phone},</if> </if> 
-		<if test="address !=null"> <if test="address !=''">address=#{address},</if> 
-		</if> <if test="userRole !=null">userRole=#{userRole},</if> <if test="modifyBy 
-		!=null">modifyBy=#{modifyBy},</if> modifyDate=sysdate, </trim> </update> -->
+	<update id="updataApp_info" parameterType="com.app.pojo.App_info">
+		update App_info
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="supportRom !=null">supportRom=#{supportRom},</if>
+			<if test="softwareName !=null">
+				<if test="softwareName !=''">softwareName=#{softwareName},</if>
+			</if>
+			<if test="interfaceLanguage !=null">interfaceLanguage=#{interfaceLanguage},</if>
+			<if test="softwareSize !=null">softwareSize=#{softwareSize},</if>
+			<if test="downloads !=null">downloads=#{downloads},</if>
+			<if test="flatformId !=null">flatformId=#{flatformId},</if>
+			<if test="categoryLevel1 !=null">categoryLevel1=#{categoryLevel1},</if>
+			<if test="categoryLevel2 !=null">categoryLevel2=#{categoryLevel2},</if>
+			<if test="categoryLevel3 !=null">categoryLevel3=#{categoryLevel3},</if>
+			<if test="softwareName !=''">
+				<if test="logoLocPath !=null">logoLocPath=#{logoLocPath},</if>
+			</if>
+			<if test="modifyBy !=null">modifyBy=#{modifyBy},</if>
+			modifyDate=sysdate,
+		</trim>
+	</update>
+
+	<!-- 新增app版本号的同时更新app_info里的版本号 -->
+	<update id="updataApp_infoVersionId" parameterType="com.app.pojo.App_info">
+		update App_info
+
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="versionId !=null">versionId=#{versionId},</if>
+		</trim>
+	</update>
+	<!-- 和上面的updataApp_infoVersionId 配套使用，添加成功后查询添加的版本的id -->
+	<select id="findApp_versionId" resultType="int"
+		parameterType="com.app.pojo.App_version">
+		select id from App_version where
+		versionNo = #{versionNo}
+		and appId = #{appId}
+	</select>
 
 
 	<!-- 验证用户输入的用户名和密码是否正确 -->
@@ -91,6 +139,19 @@
 		and
 		devName=#{devName}
 	</select>
+
+	<!-- 查询app版本信息和appName -->
+	<select id="findApp_versionAndAppName" resultType="com.app.pojo.App_version"
+		parameterType="int">
+		select v.*,a.softwareName as appName , vs.STATUSNAME as publishStatusName
+		from App_version v,DATA_VERSIONSTATUS vs
+		,APP_INFO a where
+		v.appId =
+		#{id}
+		and a.id=v.APPID
+		and vs.ID=v.PUBLISHSTATUS
+	</select>
+
 
 	<!-- 查询所有的app状态列表 -->
 	<select id="findAllOfAppStatus" resultType="com.app.pojo.Data_appStatus">
@@ -135,7 +196,6 @@
 		select CATEGORYNAME from
 		APP_CATEGORY where
 		id=#{categoryLevel1}
-
 	</select>
 
 	<!-- 查询categoryLevel2Name -->
@@ -146,21 +206,21 @@
 	<!-- <select id="getCategoryLevel3Name" resultType="String" parameterType="int"> 
 		select CATEGORYNAME from APP_CATEGORY where id=#{categoryLevel3} </select> -->
 
+
+	<!-- 以下三个select和findAppList嵌套使用 -->
+	<!-- findAppList只能查出一些信息，还有三个字段信息不好查出来，所以它们三个诞生了 -->
 	<!--查询所属的平台 -->
 	<select id="getFlatformName" resultType="String" parameterType="int">
 		select FLATFORMNAME from
 		DATA_FLATFORM where
 		id=#{flatformId}
-
 	</select>
-
 
 	<!--查询app状态 -->
 	<select id="getAppStatusName" resultType="String" parameterType="int">
 		select STATUSNAME from
 		DATA_APPSTATUS where
 		id=#{statusId}
-
 	</select>
 
 	<!--查询最新版本号 -->
@@ -168,18 +228,28 @@
 		select versionNo from
 		APP_VERSION where
 		id=#{versionId}
-
 	</select>
+
 
 
 	<!--根据id查询app信息 -->
 	<select id="getApp_infoById" resultType="com.app.pojo.App_info"
 		parameterType="int">
 		select a.*,s.statusName from
-		APP_INFO a,DATA_APPSTATUS s where
+		APP_INFO a,DATA_APPSTATUS s
+		where
 		a.id=#{id}
 		and s.id=a.status
+	</select>
 
+	<!--根据id查询多条app -->
+	<!-- 暂未用 -->
+	<select id="getApp_infoListById" resultType="com.app.pojo.App_info"
+		parameterType="int">
+		select a.* from
+		APP_INFO a
+		where
+		a.id=#{id}
 	</select>
 
 
@@ -194,8 +264,7 @@
 		select * from
 		(select ROWNUM rn,u.* from
 		(select
-		a.* from APP_INFO
-		a
+		a.* from APP_INFO a
 		where
 		1=1
 		<if test="softwareName !=null and softwareName !=''">
@@ -216,8 +285,6 @@
 		<if test="categoryLevel3 !=null and categoryLevel3 !=''">
 			and a.categoryLevel3 = #{categoryLevel3}
 		</if>
-
-
 		order by
 		a.creationDate desc
 		) u where rownum

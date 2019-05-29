@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.app.pojo.App_category;
 import com.app.pojo.App_info;
+import com.app.pojo.App_version;
 import com.app.pojo.Data_appStatus;
 import com.app.pojo.Data_flatForm;
 import com.app.pojo.Dev_user;
@@ -54,51 +55,37 @@ public interface Dev_userService {
 	 * @return
 	 */
 	public int countByMap(Map<String, String> map);
-	
+
 	/**
 	 * 查询categoryLevel1Name
 	 * 
 	 * @return
 	 */
 	public String getCategoryLevel1Name(Integer categoryLevel1);
-	
-	/**
-	 * 查询categoryLevel2Name
-	 * 
-	 * @return
-	 */
-//	public String getCategoryLevel2Name(Integer categoryLevel2);
-	
-	/**
-	 * 查询categoryLevel3Name
-	 * 
-	 * @return
-	 */
-//	public String getCategoryLevel3Name(Integer categoryLevel3);
-	
-	
+
+	// public String getCategoryLevel2Name(Integer categoryLevel2);
+	// public String getCategoryLevel3Name(Integer categoryLevel3);
+
 	/**
 	 * 查询flatformName
 	 * 
 	 * @return
 	 */
 	public String getFlatformName(Integer flatformId);
-	
-	
+
 	/**
 	 * 查询statusName
 	 * 
 	 * @return
 	 */
 	public String getAppStatusName(Integer statusId);
-	
+
 	/**
 	 * 查询VersionNo
 	 * 
 	 * @return
 	 */
 	public String getAppVersionNo(Integer versionId);
-	
 
 	/**
 	 * 根据条件查询Dev_user
@@ -117,6 +104,14 @@ public interface Dev_userService {
 	public int addApp_info(App_info app_info);
 
 	/**
+	 * 修改app信息
+	 * 
+	 * @param app_info
+	 * @return
+	 */
+	public int updataApp_info(App_info app_info);
+
+	/**
 	 * 根据id查询app信息
 	 * 
 	 * 查询App_info
@@ -125,6 +120,46 @@ public interface Dev_userService {
 	 * @return
 	 */
 	public App_info getApp_infoById(Integer id);
+
+	/**
+	 * 添加app版本信息
+	 * 
+	 * @param app_version
+	 * @return
+	 */
+	public int saveAppVersion(App_version app_version);
+
+	/**
+	 * 在修改app_info的versionId之前，先查出新增的那条记录的id
+	 * 
+	 * @param app_version
+	 * @return
+	 */
+	public int findApp_versionId(App_version app_version);
+
+	/**
+	 * 在添加app版本信息的同时修改app_info里的versionId
+	 * 
+	 * @param app_info
+	 * @return
+	 */
+	public int updataApp_infoVersionId(App_info app_info);
+
+	/**
+	 * 转到app版本添加界面or修改界面时查询出历史修改信息
+	 * 
+	 * @param app_version
+	 * @return
+	 */
+	public List<App_version> findApp_versionAndAppName(Integer id);
+
+	/**
+	 * 根据id查询多条app信息
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public List<App_info> getApp_infoListById(Integer id);
 
 	/**
 	 * Ajax异步验证 把前端输入的APKName拿去查询数据库里是否存在
@@ -141,14 +176,6 @@ public interface Dev_userService {
 	 * @return
 	 */
 	public int deleteDev_user(Integer id);
-
-	/**
-	 * 修改用户信息
-	 * 
-	 * @param dev_user
-	 * @return
-	 */
-	public int updata(Dev_user dev_user);
 
 	/**
 	 * 修改用户密码

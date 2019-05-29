@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.app.mapper.Dev_userMapper;
 import com.app.pojo.App_category;
 import com.app.pojo.App_info;
+import com.app.pojo.App_version;
 import com.app.pojo.Data_appStatus;
 import com.app.pojo.Data_flatForm;
 import com.app.pojo.Dev_user;
@@ -33,11 +34,6 @@ public class Dev_userServiceImpl implements Dev_userService {
 	public List<App_info> getApp_infoListByMap(Map<String, String> map) {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.getApp_infoListByMap(map);
-	}
-
-	public Dev_user getDev_userById(String id) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public int deleteDev_user(Integer id) {
@@ -110,14 +106,44 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return this.dev_userMapper.getApp_infoById(id);
 	}
 
-	/*public String getCategoryLevel2Name(Integer categoryLevel2) {
+	public int updataApp_info(App_info app_info) {
 		// TODO Auto-generated method stub
-		return this.dev_userMapper.getCategoryLevel2Name(categoryLevel2);
+		return this.dev_userMapper.updataApp_info(app_info);
 	}
 
-	public String getCategoryLevel3Name(Integer categoryLevel3) {
+	public int saveAppVersion(App_version app_version) {
 		// TODO Auto-generated method stub
-		return this.dev_userMapper.getCategoryLevel3Name(categoryLevel3);
-	}*/
+		return this.dev_userMapper.saveAppVersion(app_version);
+	}
+
+	public int updataApp_infoVersionId(App_info app_info) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.updataApp_infoVersionId(app_info);
+	}
+
+	public int findApp_versionId(App_version app_version) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findApp_versionId(app_version);
+	}
+
+	public List<App_version> findApp_versionAndAppName(Integer id) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findApp_versionAndAppName(id);
+	}
+
+	public List<App_info> getApp_infoListById(Integer id) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getApp_infoListById(id);
+	}
+
+	/*
+	 * public String getCategoryLevel2Name(Integer categoryLevel2) { // TODO
+	 * Auto-generated method stub return
+	 * this.dev_userMapper.getCategoryLevel2Name(categoryLevel2); }
+	 * 
+	 * public String getCategoryLevel3Name(Integer categoryLevel3) { // TODO
+	 * Auto-generated method stub return
+	 * this.dev_userMapper.getCategoryLevel3Name(categoryLevel3); }
+	 */
 
 }

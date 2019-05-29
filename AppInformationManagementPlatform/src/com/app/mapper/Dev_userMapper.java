@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.app.pojo.App_category;
 import com.app.pojo.App_info;
+import com.app.pojo.App_version;
 import com.app.pojo.Data_appStatus;
 import com.app.pojo.Data_flatForm;
 import com.app.pojo.Dev_user;
@@ -114,6 +115,14 @@ public interface Dev_userMapper {
 	public int addApp_info(App_info app_info);
 
 	/**
+	 * 修改app信息
+	 * 
+	 * @param app_info
+	 * @return
+	 */
+	public int updataApp_info(App_info app_info);
+
+	/**
 	 * 根据id查询app信息
 	 * 
 	 * 查询App_info
@@ -122,6 +131,46 @@ public interface Dev_userMapper {
 	 * @return
 	 */
 	public App_info getApp_infoById(Integer id);
+
+	/**
+	 * 根据id查询多条app信息
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public List<App_info> getApp_infoListById(Integer id);
+
+	/**
+	 * 添加app版本信息
+	 * 
+	 * @param app_version
+	 * @return
+	 */
+	public int saveAppVersion(App_version app_version);
+
+	/**
+	 * 在修改app_info的versionId之前，先查出新增的那条记录的id
+	 * 
+	 * @param app_version
+	 * @return
+	 */
+	public int findApp_versionId(App_version app_version);
+
+	/**
+	 * 在添加app版本信息的同时修改app_info里的versionId
+	 * 
+	 * @param app_info
+	 * @return
+	 */
+	public int updataApp_infoVersionId(App_info app_info);
+
+	/**
+	 * 转到app版本添加界面or修改界面时查询出历史修改信息
+	 * 
+	 * @param app_version
+	 * @return
+	 */
+	public List<App_version> findApp_versionAndAppName(Integer id);
 
 	/**
 	 * Ajax异步验证 把前端输入的APKName拿去查询数据库里是否存在
