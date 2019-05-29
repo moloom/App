@@ -5,11 +5,54 @@
 <mapper namespace="com.app.mapper.Dev_userMapper">
 
 	<!-- 添加 时间默认运行此sql的时间 -->
-	<!-- <insert id="addUser" parameterType="com.app.pojo.Dev_user"> insert 
-		into smbms_user( id, userCode, userName, userPassword, gender, birthday, 
-		phone, address, userRole, createdBy, creationDate ) values ( #{id}, #{userCode}, 
-		#{userName}, #{userPassword}, #{gender}, #{birthday}, #{phone}, #{address}, 
-		#{userRole}, #{createdBy}, sysdate ) </insert> -->
+	<!--updateDate, #{updateDate},onSaleDate, offSaleDate,#{onSaleDate}, #{offSaleDate}, 
+		logoPicPath,#{logoPicPath}, versionId,#{versionId}, -->
+	<insert id="addApp_info" parameterType="com.app.pojo.App_info">
+		insert
+		into App_info(
+		id,
+		softwareName,
+		APKName,
+		supportRom,
+		interfaceLanguage,
+		softwareSize,
+
+		devId,
+		appInfo,
+		status,
+
+		flatformId,
+		categoryLevel3,
+		downloads,
+		categoryLevel1,
+		categoryLevel2,
+
+		logoLocPath,
+
+		createdBy,
+		creationDate )
+		values
+		( #{id},
+		#{softwareName},
+		#{APKName},
+		#{supportRom},
+		#{interfaceLanguage},
+		#{softwareSize},
+		#{createdBy},
+		#{appInfo},
+		#{status},
+
+		#{flatformId},
+		#{categoryLevel3},
+		#{downloads},
+		#{categoryLevel1},
+		#{categoryLevel2},
+
+		#{logoLocPath},
+
+		#{createdBy},
+		sysdate )
+	</insert>
 
 	<!-- 删除 -->
 	<!-- <delete id="deleteUser" parameterType="int"> delete from SMBMS_USER 
@@ -86,9 +129,51 @@
 
 
 
+	<!-- 查询categoryLevel1Name -->
+	<select id="getCategoryLevel1Name" resultType="String"
+		parameterType="int">
+		select CATEGORYNAME from
+		APP_CATEGORY where
+		id=#{categoryLevel1}
+
+	</select>
+
+	<!-- 查询categoryLevel2Name -->
+	<!-- <select id="getCategoryLevel2Name" resultType="String" parameterType="int"> 
+		select CATEGORYNAME from APP_CATEGORY where id=#{categoryLevel2} </select> -->
+
+	<!-- 查询categoryLevel3Name -->
+	<!-- <select id="getCategoryLevel3Name" resultType="String" parameterType="int"> 
+		select CATEGORYNAME from APP_CATEGORY where id=#{categoryLevel3} </select> -->
+
+	<!--查询所属的平台 -->
+	<select id="getFlatformName" resultType="String" parameterType="int">
+		select FLATFORMNAME from
+		DATA_FLATFORM where
+		id=#{flatformId}
+
+	</select>
+
+
+	<!--查询app状态 -->
+	<select id="getAppStatusName" resultType="String" parameterType="int">
+		select STATUSNAME from
+		DATA_APPSTATUS where
+		id=#{statusId}
+
+	</select>
+	
+	<!--查询最新版本号	 -->
+	<select id="getAppVersionNo" resultType="String" parameterType="int">
+		select versionNo from
+		APP_VERSION where
+		id=#{versionId}
+
+	</select>
 
 
 	<!-- 分页功能 -->
+
 	<!-- 查询App_info -->
 	<select id="getApp_infoListByMap" resultType="com.app.pojo.App_info"
 		parameterType="java.util.Map">
@@ -97,19 +182,8 @@
 		select * from
 		(select ROWNUM rn,u.* from
 		(select
-		a.*,f.FLATFORMNAME,s.STATUSNAME,v.VERSIONNO,
-		(SELECT CATEGORYNAME FROM
-		APP_INFO ai,APP_CATEGORY ac
-		where ai.CATEGORYLEVEL1=ac.ID) as CATEGORYLEVEL1NAME,
-		(SELECT CATEGORYNAME
-		FROM
-		APP_INFO ai,APP_CATEGORY ac
-		where ai.CATEGORYLEVEL2=ac.ID) as CATEGORYLEVEL2NAME,
-		(SELECT CATEGORYNAME
-		FROM
-		APP_INFO ai,APP_CATEGORY ac
-		where ai.CATEGORYLEVEL3=ac.ID) as CATEGORYLEVEL3NAME
-		from APP_INFO a,DATA_FLATFORM f,DATA_APPSTATUS s,APP_VERSION v
+		a.* from APP_INFO
+		a
 		where
 		1=1
 		<if test="softwareName !=null and softwareName !=''">
@@ -130,9 +204,8 @@
 		<if test="categoryLevel3 !=null and categoryLevel3 !=''">
 			and a.categoryLevel3 = #{categoryLevel3}
 		</if>
-		and a.FLATFORMID=f.ID
-		and a.STATUS=s.id
-		and a.VERSIONID=v.ID
+
+
 		order by
 		a.creationDate desc
 		) u where rownum

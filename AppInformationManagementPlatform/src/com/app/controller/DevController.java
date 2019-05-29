@@ -1,4 +1,4 @@
-package com.app.controller;
+﻿package com.app.controller;
 
 import java.io.File;
 import java.io.IOException;
@@ -112,12 +112,13 @@ public class DevController {
 
 	/**
 	 * 转到信息查询界面，并查询出所有的app信息，
+	 * 查询时，先查出一级分类的名称，再返回时，循环遍历list，在forech循环里，拿到当前的app_info对象里的l2，l3去数据库里查出它们的名称并赋给当前app_info对象的l2，l3相应的name属性里
 	 * 
 	 * @param model
 	 * @return
 	 */
-	@RequestMapping("/flatFormAppList.html")
-	public String flatformAppList(Model model) {
+	@RequestMapping("/toflatformAppList.html")
+	public String toflatformAppList(Integer pageIndex, App_info app_infos, Model model) {
 		/**
 		 * 查询app信息列表 ok
 		 */
@@ -137,7 +138,98 @@ public class DevController {
 		map.put("categoryLevel3", "");
 		List<App_info> app_infoList = this.dev_userService.getApp_infoListByMap(map);
 		page.setTotalCount(this.dev_userService.countByMap(map));
+		/**
+		 * 遍历循环查出来的数据，because，以下几个字段还没查出来
+		 * 
+		 * must在查出来的数据的基础上根据相应的字段去查，再赋给当前遍历对象相应的属性
+		 */
 		for (App_info app_info : app_infoList) {
+			app_info.setCategoryLevel1Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel1()));
+			app_info.setCategoryLevel2Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel2()));
+			app_info.setCategoryLevel3Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel3()));
+			app_info.setFlatformName(this.dev_userService.getFlatformName(app_info.getFlatformId()));
+			app_info.setStatusName(this.dev_userService.getAppStatusName(app_info.getStatus()));
+			app_info.setVersionNo(this.dev_userService.getAppVersionNo(app_info.getVersionId()));
+			System.out.println("\n" + app_info);
+		}
+		model.addAttribute("pages", page);
+		model.addAttribute("appInfoList", app_infoList);
+
+		return "developer/appinfolist";
+	}
+
+	/**
+	 * 根据前台的查询条件查询，分页功能，名称映射都有
+	 * 
+	 * @param pageIndex
+	 * @param app_infos
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/findAppList.html")
+	public String findAppList(Integer pageIndex, App_info app_infos, Model model) {
+		/**
+		 * 查询app信息列表 ok
+		 */
+		System.out.println("\n\n\n pageIndex=" + pageIndex + "\n\n" + app_infos);
+		Map<String, String> map = new HashMap<String, String>();
+		Page page = new Page();
+		if (pageIndex == null) {
+			pageIndex = 1;
+		}
+
+		// 根据前台传过来的要显示第几页 计算出查询时要用到的pageMax，和pageMin
+		int pageMax = 10 * pageIndex;
+		int pageMin = pageMax - 10;
+		page.setCurrentPageNo(1);
+		page.setTotalPageCount(0);
+		map.put("pageMax", Integer.toString(pageMax));
+		map.put("pageMin", Integer.toString(pageMin));
+		/**
+		 * 判断其是否为0和null,不为0才转为字符串，
+		 * 
+		 * 判断 softwareName时不能加 app_infos.getSoftwareName() !=
+		 * ""这个条件，否则数据库拼接字符串会报错
+		 */
+		if (app_infos.getSoftwareName() != null) {
+			map.put("softwareName", app_infos.getSoftwareName());
+		} else {
+			map.put("softwareName", "");
+		}
+		if (app_infos.getStatus() != null && app_infos.getStatus() != 0) {
+			map.put("status", Integer.toString(app_infos.getStatus()));
+		}
+		if (app_infos.getFlatformId() != null && app_infos.getFlatformId() != 0) {
+			map.put("flatformId", Integer.toString(app_infos.getFlatformId()));
+		}
+		if (app_infos.getCategoryLevel1() != null && app_infos.getCategoryLevel1() != 0) {
+			map.put("categoryLevel1", Integer.toString(app_infos.getCategoryLevel1()));
+		}
+		if (app_infos.getCategoryLevel2() != null && app_infos.getCategoryLevel2() != 0) {
+			map.put("categoryLevel2", Integer.toString(app_infos.getCategoryLevel2()));
+		}
+		if (app_infos.getCategoryLevel3() != null && app_infos.getCategoryLevel3() != 0) {
+			map.put("categoryLevel3", Integer.toString(app_infos.getCategoryLevel3()));
+		}
+		System.out.println("\n\n\nmap:" + map.toString() + "\n\n\n");
+		List<App_info> app_infoList = this.dev_userService.getApp_infoListByMap(map);
+		/**
+		 * 根据条件查询到的总记录条数
+		 */
+		page.setTotalCount(this.dev_userService.countByMap(map));
+
+		/**
+		 * 遍历循环查出来的数据，because，以下几个字段还没查出来
+		 * 
+		 * must在查出来的数据的基础上根据相应的字段去查，再赋给当前遍历对象相应的属性
+		 */
+		for (App_info app_info : app_infoList) {
+			app_info.setCategoryLevel1Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel1()));
+			app_info.setCategoryLevel2Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel2()));
+			app_info.setCategoryLevel3Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel3()));
+			app_info.setFlatformName(this.dev_userService.getFlatformName(app_info.getFlatformId()));
+			app_info.setStatusName(this.dev_userService.getAppStatusName(app_info.getStatus()));
+			app_info.setVersionNo(this.dev_userService.getAppVersionNo(app_info.getVersionId()));
 			System.out.println("\n" + app_info);
 		}
 		model.addAttribute("pages", page);
@@ -169,90 +261,28 @@ public class DevController {
 	}
 
 	/**
-	 * 根据前台的查询条件查询，分页功能，名称映射都有
-	 * 
-	 * @param pageIndex
-	 * @param app_infos
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/findAppList.html")
-	public String findAppList(Integer pageIndex, App_info app_infos, Model model) {
-		/**
-		 * 查询app信息列表 ok
-		 */
-		System.out.println("\n\n\n\n\n" + app_infos);
-		Map<String, String> map = new HashMap<String, String>();
-		Page page = new Page();
-		// 根据前台传过来的要显示第几页 计算出查询时要用到的pageMax，和pageMin
-		int pageMax = 10 * pageIndex;
-		int pageMin = pageMax - 10;
-		page.setCurrentPageNo(1);
-		page.setTotalPageCount(0);
-		map.put("pageMax", Integer.toString(pageMax));
-		map.put("pageMin", Integer.toString(pageMin));
-		/**
-		 * 判断其是否为0和null,不为0才转为字符串，
-		 * 
-		 * 判断 softwareName时不能加 app_infos.getSoftwareName() !=
-		 * ""这个条件，否则数据库拼接字符串会报错
-		 */
-		if (app_infos.getSoftwareName() != null) {
-			map.put("softwareName", app_infos.getSoftwareName());
-		}
-		if (app_infos.getStatus() != null && app_infos.getStatus() != 0) {
-			map.put("status", Integer.toString(app_infos.getStatus()));
-		}
-		if (app_infos.getFlatformId() != null && app_infos.getFlatformId() != 0) {
-			map.put("flatformId", Integer.toString(app_infos.getFlatformId()));
-		}
-		if (app_infos.getCategoryLevel1() != null && app_infos.getCategoryLevel1() != 0) {
-			map.put("categoryLevel1", Integer.toString(app_infos.getCategoryLevel1()));
-		}
-		if (app_infos.getCategoryLevel2() != null && app_infos.getCategoryLevel2() != 0) {
-			map.put("categoryLevel2", Integer.toString(app_infos.getCategoryLevel2()));
-		}
-		if (app_infos.getCategoryLevel3() != null && app_infos.getCategoryLevel3() != 0) {
-			map.put("categoryLevel3", Integer.toString(app_infos.getCategoryLevel3()));
-		}
-		List<App_info> app_infoList = this.dev_userService.getApp_infoListByMap(map);
-		/**
-		 * 根据条件查询到的总记录条数
-		 */
-		page.setTotalCount(this.dev_userService.countByMap(map));
-		for (App_info app_info : app_infoList) {
-			System.out.println("\n" + app_info);
-		}
-		model.addAttribute("pages", page);
-		model.addAttribute("appInfoList", app_infoList);
-		/**
-		 * 查询app状态列表，DATA_APPSTATUS ok
-		 */
-		model.addAttribute("statusList", this.appStatus);
-		/**
-		 * 查询所属平台,DATA_FLATFORM ok
-		 */
-		model.addAttribute("flatFormList", this.flatforms);
-		/**
-		 * 一级分类
-		 */
-		model.addAttribute("categoryLevel1List", this.categories);
-
-		return "developer/appinfolist";
-	}
-
-	/**
 	 * 转到添加app基础信息界面
 	 * 
-	 * @param app_info
-	 * @param model
 	 * @return
 	 */
 	@RequestMapping(value = "/toAppinfoAdd.html")
-	public String toAppinfoAdd(Model model) {
+	public String toAppinfoAdd() {
 		// System.out.println("\napp_info：" + app_info);
 
 		return "developer/appinfoadd";
+	}
+
+	/**
+	 * 转到修改app基础信息界面
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/appinfomodify.html")
+	public String toAppinfoModify(Integer id) {
+		// System.out.println("\napp_info：" + app_info);
+
+		return "developer/appinfomodify";
 	}
 
 	/**
@@ -271,6 +301,7 @@ public class DevController {
 		System.out.println("\napp_info：" + app_info);
 		String fileUploadError = null;// 上传错误信息
 		boolean flag = true;// 判断条件// 上传文件的位置
+		int count = 0;// 添加后返回的记录条数
 		String path = request.getSession().getServletContext().getRealPath("statics" + File.separator + "uploadfiles");
 
 		// START 循环遍历上传的文件
@@ -313,10 +344,6 @@ public class DevController {
 				}
 				// 文件路径保存到app_info对象里
 				app_info.setLogoLocPath(path + File.separator + fileName);
-				// 第二个文件的路径
-				// if (i == 1) {
-				// app_info.setLogoPicPath(path + File.separator + fileName);
-				// }
 
 			} else {
 				request.setAttribute("fileUploadError", "*上传图片格式不正确!");
@@ -329,10 +356,15 @@ public class DevController {
 		// 如果上传文件报错，就不保存
 		if (flag) {
 			System.out.println("\n\n\n\n\n\n" + app_info);
+			app_info.setId(0);// 随便给个值，添加数据时触发器会自动替换
+			count = this.dev_userService.addApp_info(app_info);
+			logger.debug("----------------logger-End---------------appinfoSave-----" + count);
+			return "toflatformAppList.html";
+		} else {
+			logger.debug("----------------logger-End---------------appinfoSave-----");
+			return this.toAppinfoAdd();
 		}
 
-		logger.debug("----------------logger-End---------------appinfoSave-----");
-		return this.flatformAppList(model);
 	}
 
 	/**

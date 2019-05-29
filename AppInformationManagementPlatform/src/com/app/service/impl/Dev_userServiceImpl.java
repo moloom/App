@@ -35,11 +35,6 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return this.dev_userMapper.getApp_infoListByMap(map);
 	}
 
-	public int addDev_user(Dev_user dev_user) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public Dev_user getDev_userById(String id) {
 		// TODO Auto-generated method stub
 		return null;
@@ -84,5 +79,40 @@ public class Dev_userServiceImpl implements Dev_userService {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.verifyAPKName(APKName);
 	}
+
+	public int addApp_info(App_info app_info) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.addApp_info(app_info);
+	}
+
+	public String getCategoryLevel1Name(Integer categoryLevel1) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getCategoryLevel1Name(categoryLevel1);
+	}
+
+	public String getFlatformName(Integer flatformId) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getFlatformName(flatformId);
+	}
+
+	public String getAppStatusName(Integer statusId) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getAppStatusName(statusId);
+	}
+
+	public String getAppVersionNo(Integer versionId) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getAppVersionNo(versionId);
+	}
+
+	/*public String getCategoryLevel2Name(Integer categoryLevel2) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getCategoryLevel2Name(categoryLevel2);
+	}
+
+	public String getCategoryLevel3Name(Integer categoryLevel3) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getCategoryLevel3Name(categoryLevel3);
+	}*/
 
 }

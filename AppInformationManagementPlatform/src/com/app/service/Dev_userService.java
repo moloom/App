@@ -14,7 +14,7 @@ public interface Dev_userService {
 	/**
 	 * 登录时，验证数据库里账号和密码是否正确
 	 * 
-	 * @param  APKName
+	 * @param APKName
 	 * @return
 	 */
 	public Dev_user findDev_user(Dev_user dev_user);
@@ -54,6 +54,51 @@ public interface Dev_userService {
 	 * @return
 	 */
 	public int countByMap(Map<String, String> map);
+	
+	/**
+	 * 查询categoryLevel1Name
+	 * 
+	 * @return
+	 */
+	public String getCategoryLevel1Name(Integer categoryLevel1);
+	
+	/**
+	 * 查询categoryLevel2Name
+	 * 
+	 * @return
+	 */
+//	public String getCategoryLevel2Name(Integer categoryLevel2);
+	
+	/**
+	 * 查询categoryLevel3Name
+	 * 
+	 * @return
+	 */
+//	public String getCategoryLevel3Name(Integer categoryLevel3);
+	
+	
+	/**
+	 * 查询flatformName
+	 * 
+	 * @return
+	 */
+	public String getFlatformName(Integer flatformId);
+	
+	
+	/**
+	 * 查询statusName
+	 * 
+	 * @return
+	 */
+	public String getAppStatusName(Integer statusId);
+	
+	/**
+	 * 查询VersionNo
+	 * 
+	 * @return
+	 */
+	public String getAppVersionNo(Integer versionId);
+	
 
 	/**
 	 * 根据条件查询Dev_user
@@ -64,12 +109,12 @@ public interface Dev_userService {
 	public List<App_info> getApp_infoListByMap(Map<String, String> map);
 
 	/**
-	 * 添加用户
+	 * 添加app基础信息
 	 * 
 	 * @param dev_user
 	 * @return
 	 */
-	public int addDev_user(Dev_user dev_user);
+	public int addApp_info(App_info app_info);
 
 	/**
 	 * 根据id查询用户的详细信息
