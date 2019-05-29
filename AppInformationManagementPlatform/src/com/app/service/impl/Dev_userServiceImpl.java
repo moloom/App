@@ -105,6 +105,11 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return this.dev_userMapper.getAppVersionNo(versionId);
 	}
 
+	public App_info getApp_infoById(Integer id) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.getApp_infoById(id);
+	}
+
 	/*public String getCategoryLevel2Name(Integer categoryLevel2) {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.getCategoryLevel2Name(categoryLevel2);

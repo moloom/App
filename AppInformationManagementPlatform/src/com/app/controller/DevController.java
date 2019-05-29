@@ -111,56 +111,11 @@ public class DevController {
 	}
 
 	/**
-	 * 转到信息查询界面，并查询出所有的app信息，
-	 * 查询时，先查出一级分类的名称，再返回时，循环遍历list，在forech循环里，拿到当前的app_info对象里的l2，l3去数据库里查出它们的名称并赋给当前app_info对象的l2，l3相应的name属性里
+	 * 根据前台的查询条件查询，分页功能，名称映射都有 转到信息查询界面，并查询出所有的app信息，
+	 * 查询时，先查出一级分类的名称，再返回时，循环遍历list
 	 * 
-	 * @param model
-	 * @return
-	 */
-	@RequestMapping("/toflatformAppList.html")
-	public String toflatformAppList(Integer pageIndex, App_info app_infos, Model model) {
-		/**
-		 * 查询app信息列表 ok
-		 */
-		Map<String, String> map = new HashMap<String, String>();
-		Page page = new Page();
-		int pageMax = 10;
-		int pageMin = 0;
-		page.setCurrentPageNo(1);
-		page.setTotalPageCount(0);
-		map.put("pageMax", Integer.toString(pageMax));
-		map.put("pageMin", Integer.toString(pageMin));
-		map.put("softwareName", "");
-		map.put("status", "");
-		map.put("flatformId", "");
-		map.put("categoryLevel1", "");
-		map.put("categoryLevel2", "");
-		map.put("categoryLevel3", "");
-		List<App_info> app_infoList = this.dev_userService.getApp_infoListByMap(map);
-		page.setTotalCount(this.dev_userService.countByMap(map));
-		/**
-		 * 遍历循环查出来的数据，because，以下几个字段还没查出来
-		 * 
-		 * must在查出来的数据的基础上根据相应的字段去查，再赋给当前遍历对象相应的属性
-		 */
-		for (App_info app_info : app_infoList) {
-			app_info.setCategoryLevel1Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel1()));
-			app_info.setCategoryLevel2Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel2()));
-			app_info.setCategoryLevel3Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel3()));
-			app_info.setFlatformName(this.dev_userService.getFlatformName(app_info.getFlatformId()));
-			app_info.setStatusName(this.dev_userService.getAppStatusName(app_info.getStatus()));
-			app_info.setVersionNo(this.dev_userService.getAppVersionNo(app_info.getVersionId()));
-			System.out.println("\n" + app_info);
-		}
-		model.addAttribute("pages", page);
-		model.addAttribute("appInfoList", app_infoList);
-
-		return "developer/appinfolist";
-	}
-
-	/**
-	 * 根据前台的查询条件查询，分页功能，名称映射都有
-	 * 
+	 * 在forech循环里，拿到当前的app_info对象里的l2，l3去数据库里查出它们的名称并赋给当前app_info对象的l2，l3相应的name属性里
+	 *
 	 * @param pageIndex
 	 * @param app_infos
 	 * @param model
@@ -279,9 +234,10 @@ public class DevController {
 	 * @return
 	 */
 	@RequestMapping(value = "/appinfomodify.html")
-	public String toAppinfoModify(Integer id) {
+	public String toAppinfoModify(Integer id, Model model) {
 		// System.out.println("\napp_info：" + app_info);
-
+		App_info app_info = this.dev_userService.getApp_infoById(id);
+		model.addAttribute("appInfo", app_info);
 		return "developer/appinfomodify";
 	}
 
@@ -355,7 +311,7 @@ public class DevController {
 		// END 循环遍历上传的文件
 		// 如果上传文件报错，就不保存
 		if (flag) {
-			System.out.println("\n\n\n\n\n\n" + app_info);
+			System.out.println("\n updata:" + app_info);
 			app_info.setId(0);// 随便给个值，添加数据时触发器会自动替换
 			count = this.dev_userService.addApp_info(app_info);
 			logger.debug("----------------logger-End---------------appinfoSave-----" + count);

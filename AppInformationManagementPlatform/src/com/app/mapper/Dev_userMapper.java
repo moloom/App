@@ -114,12 +114,14 @@ public interface Dev_userMapper {
 	public int addApp_info(App_info app_info);
 
 	/**
-	 * 根据id查询用户的详细信息
+	 * 根据id查询app信息
+	 * 
+	 * 查询App_info
 	 * 
 	 * @param id
 	 * @return
 	 */
-	public Dev_user getDev_userById(String id);
+	public App_info getApp_infoById(Integer id);
 
 	/**
 	 * Ajax异步验证 把前端输入的APKName拿去查询数据库里是否存在

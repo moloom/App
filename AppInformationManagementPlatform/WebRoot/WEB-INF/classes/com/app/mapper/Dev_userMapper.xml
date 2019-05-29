@@ -162,14 +162,26 @@
 		id=#{statusId}
 
 	</select>
-	
-	<!--查询最新版本号	 -->
+
+	<!--查询最新版本号 -->
 	<select id="getAppVersionNo" resultType="String" parameterType="int">
 		select versionNo from
 		APP_VERSION where
 		id=#{versionId}
 
 	</select>
+
+
+	<!--根据id查询app信息 -->
+	<select id="getApp_infoById" resultType="com.app.pojo.App_info"
+		parameterType="int">
+		select a.*,s.statusName from
+		APP_INFO a,DATA_APPSTATUS s where
+		a.id=#{id}
+		and s.id=a.status
+
+	</select>
+
 
 
 	<!-- 分页功能 -->

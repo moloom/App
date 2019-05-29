@@ -36,7 +36,7 @@
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
               <input id="supportROM" class="form-control col-md-7 col-xs-12" 
-              	name="supportROM" value="${appInfo.supportROM}" required="required"
+              	name="supportROM" value="${appInfo.supportRom}" required="required"
               	data-validate-length-range="20" data-validate-words="1" 
               	placeholder="请输入支持的ROM" type="text">
             </div>
