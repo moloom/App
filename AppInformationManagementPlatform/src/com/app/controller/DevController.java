@@ -1,28 +1,29 @@
 ﻿package com.app.controller;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileInputStream;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-
 import org.apache.commons.io.FilenameUtils;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
 import com.app.pojo.Page;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.app.pojo.App_category;
 import com.app.pojo.App_info;
@@ -31,7 +32,8 @@ import com.app.pojo.Data_appStatus;
 import com.app.pojo.Data_flatForm;
 import com.app.pojo.Dev_user;
 import com.app.service.Dev_userService;
-
+import com.app.utils.MyFile;
+import Decoder.BASE64Encoder;
 import oracle.net.aso.a;
 
 /**
@@ -58,6 +60,8 @@ public class DevController {
 	private List<Data_flatForm> flatforms;
 
 	private List<App_category> categories;// 一级分类列表
+
+	private List<App_version> app_versions;
 
 	// private Pages pages = new Pages();
 
@@ -93,6 +97,7 @@ public class DevController {
 			this.flatforms = this.dev_userService.findAllOfFlatForm();
 
 			this.categories = this.dev_userService.findAllOfCategoryLevel1();
+
 			return "developer/main";
 		} else {
 			model.addAttribute("error", "您输入的账号密码错误请重新输入");
@@ -138,9 +143,9 @@ public class DevController {
 		}
 
 		// 根据前台传过来的要显示第几页 计算出查询时要用到的pageMax，和pageMin
-		int pageMax = 10 * pageIndex;
-		int pageMin = pageMax - 10;
-		page.setCurrentPageNo(1);
+		int pageMax = 5 * pageIndex;
+		int pageMin = pageMax - 5;
+		page.setCurrentPageNo(pageIndex);
 		page.setTotalPageCount(0);
 		map.put("pageMax", Integer.toString(pageMax));
 		map.put("pageMin", Integer.toString(pageMin));
@@ -273,6 +278,7 @@ public class DevController {
 		System.out.println("\n toAddAppVersion:" + app_info.getId());
 
 		List<App_version> app_versions = this.dev_userService.findApp_versionAndAppName(app_info.getId());
+		this.app_versions = app_versions;
 		for (App_version app_version : app_versions) {
 			System.out.println(app_version);
 		}
@@ -284,6 +290,8 @@ public class DevController {
 	/**
 	 * 转到修改app版本信息界面
 	 * 
+	 * 查询当前最新版本信息并传到前端
+	 * 
 	 * @param vid
 	 *            versionid
 	 * @param aid
@@ -294,12 +302,16 @@ public class DevController {
 	public String toModifyAppVersion(Integer vid, Integer aid, Model model) {
 		System.out.println("\n toModifyAppVersion:" + vid + "\t" + aid);
 		List<App_version> app_versions = this.dev_userService.findApp_versionAndAppName(aid);
+		this.app_versions = app_versions;
+		// 获取最新版本信息
 		for (App_version app_version : app_versions) {
+			model.addAttribute("appVersion", app_version);
 			System.out.println(app_version);
+			break;
 		}
-		model.addAttribute("appVersionList", app_versions);
-
+		model.addAttribute("appVersionList", this.app_versions);
 		return "developer/appversionmodify";
+
 	}
 
 	/**
@@ -310,8 +322,31 @@ public class DevController {
 	 * @return
 	 */
 	@RequestMapping(value = "/toAppView.html")
-	public String toAppView(Integer id) {
+	public String toAppView(Integer id, Model model) {
 		System.out.println("\n toAppView:" + id);
+		List<App_version> app_versions = null;
+		App_info app_info = this.dev_userService.getApp_infoById(id);
+		app_info.setCategoryLevel1Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel1()));
+		app_info.setCategoryLevel2Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel2()));
+		app_info.setCategoryLevel3Name(this.dev_userService.getCategoryLevel1Name(app_info.getCategoryLevel3()));
+		if (app_info.getFlatformId() != null) {
+			app_info.setFlatformName(this.dev_userService.getFlatformName(app_info.getFlatformId()));
+		}
+		if (app_info.getStatus() != null) {
+			app_info.setStatusName(this.dev_userService.getAppStatusName(app_info.getStatus()));
+		}
+		if (app_info.getVersionId() != null) {
+			app_info.setVersionNo(this.dev_userService.getAppVersionNo(app_info.getVersionId()));
+			app_versions = this.dev_userService.findApp_versionAndAppName(app_info.getId());
+			for (App_version app_version : app_versions) {
+				System.out.println(app_version);
+			}
+
+			model.addAttribute("appVersionList", app_versions);
+		}
+		System.out.println("\n" + app_info);
+
+		model.addAttribute("appInfo", app_info);
 		return "developer/appinfoview";
 	}
 
@@ -321,6 +356,7 @@ public class DevController {
 	 * @param id
 	 * @return
 	 */
+	@Transactional(rollbackFor = { Exception.class })
 	@RequestMapping(value = "/updataApp_info.html", method = RequestMethod.POST)
 	public String updataApp_info(App_info app_info, Model model) {
 		logger.debug("----------------logger----------------updataApp_info-----");
@@ -328,13 +364,81 @@ public class DevController {
 		int count = this.dev_userService.updataApp_info(app_info);
 
 		logger.debug("----------------logger-End---------------updataApp_info-----count=" + count);
-		return this.findAppList(null, null, model);
+		return "redirect:findAppList.html";
 	}
 
-	/**		还需修改下存放文件的文件路径，放到服务里目录下的一个专门文件夹里
-	 * 增加app版本信息
+	/**
+	 * 修改app版本信息
 	 * 
-	 * 增加的同时，要修改app_info里的版本号
+	 * 修改之后要修改app_info里的 软件大小!!!!
+	 * 
+	 * @param app_version
+	 * @param attach
+	 *            上传的文件名称
+	 * @param model
+	 * @param request
+	 * @return 如果不成功则返回到toApp_versionModify方法
+	 */
+	@Transactional(rollbackFor = { Exception.class })
+	@RequestMapping(value = "/updataApp_version.html", method = RequestMethod.POST)
+	public String updataApp_version(App_version app_version, Model model,
+			@RequestParam(value = "attach") MultipartFile attach, HttpServletRequest request) {
+		logger.debug("----------------logger----------------updataApp_version-----");
+		System.out.println("\napp_version：" + app_version);
+		App_info app_info = new App_info();// 修改软件大小用的
+		String fileUploadError = null;// 上传错误信息
+		int count = 0;// 返回的记录条数
+		String prefix = "apk";// 文件后缀
+		String path = request.getSession().getServletContext().getRealPath("statics");
+		path = path.substring(0, path.indexOf(File.separator + "webapps")) + File.separator + "uplocalfiles";
+		// 保存文件
+		MyFile myFile = new MyFile(attach, app_version.getVersionNo(), path, prefix);
+		System.out.println(myFile.getFileName());
+		/**
+		 * if 文件为空则更新其他的信息
+		 * 
+		 * else if myFil不为空，则保存文件并把文件名文件路径更新下
+		 */
+		System.out.println(attach);
+		if (attach.isEmpty()) {
+			app_version.setAPKLocPath(null);
+			app_version.setAPKFileName(null);
+			System.out.println("\n 2 app_version:" + app_version);
+			count = this.dev_userService.updataApp_version(app_version);
+			// 成功修改app_version之后修改app_info里的软件大小
+			app_info.setId(app_version.getAppId());
+			app_info.setSoftwareSize(app_version.getVersionSize());
+			app_info.setModifyBy(app_version.getModifyBy());
+			this.dev_userService.updataApp_info(app_info);
+			logger.debug("----------------logger-End---------------updataApp_version-----count=" + count);
+			return this.findAppList(null, null, model);
+		} else if (myFile.getFileName() != null) {
+			app_version.setAPKLocPath(myFile.getPath());
+			app_version.setAPKFileName(myFile.getFileName());
+			System.out.println("\n 1 app_version:" + app_version);
+			count = this.dev_userService.updataApp_version(app_version);
+			// 成功修改app_version之后修改app_info里的软件大小
+			app_info.setId(app_version.getAppId());
+			app_info.setSoftwareSize(app_version.getVersionSize());
+			app_info.setModifyBy(app_version.getModifyBy());
+			this.dev_userService.updataApp_info(app_info);
+			// 查询当前添加的记录的id，并给app_info更新versionId
+			logger.debug("----------------logger-End---------------updataApp_version-----count=" + count);
+			return "redirect:findAppList.html";
+		} else {
+			model.addAttribute("fileUploadError", fileUploadError);
+			logger.debug("----------------logger-End---------------updataApp_version-----");
+			return this.toModifyAppVersion(app_version.getId(), app_version.getAppId(), model);
+		}
+
+	}
+
+	/**
+	 * 还需修改下存放文件的文件路径，放到服务里目录下的一个专门文件夹里 增加app版本信息 ok
+	 * 
+	 * 增加app版本
+	 * 
+	 * 增加的同时，要修改app_info里的版本号 versionId 和软件大小 softwareSize
 	 * 
 	 * @param app_version
 	 * @param model
@@ -346,92 +450,34 @@ public class DevController {
 			@RequestParam(value = "a_downloadLink") MultipartFile a_downloadLink) {
 		logger.debug("----------------logger----------------saveAppVersion-----");
 		// System.out.println("\n app_version：" + app_version);
-
-		String fileUploadError = null;// 上传错误信息
-		boolean flag = true;// 判断条件// 上传文件的位置
 		int count = 0;// 添加后返回的记录条数
 		App_info app_info = new App_info();
 		String path = request.getSession().getServletContext().getRealPath("statics" + File.separator + "uploadfiles");
-		path = path.substring(0, path.indexOf(File.separator + "webapps"));
+		path = path.substring(0, path.indexOf(File.separator + "webapps")) + File.separator + "uplocalfiles";
 		System.out.println("\n" + path);
+		// 保存文件
+		MyFile myFile = new MyFile(a_downloadLink, app_version.getVersionNo(), path, "apk");
 
-		// START 循环遍历上传的文件
-
-		MultipartFile attach = a_downloadLink;
-		// 判断文件是否为空
-		if (!attach.isEmpty()) {
-			// 文件上传失败
-			if (a_downloadLink == null) {
-				fileUploadError = "uploadFileError";
-
-			} // 源文件名
-			String oldFileName = attach.getOriginalFilename();
-			// 最终文件名
-			String fileName;
-			// 源文件的后缀
-			String prefix = FilenameUtils.getExtension(oldFileName);
-			// 判断文件大小，不得超过200KB
-			int filesize = 20000000;
-			if (attach.getSize() > filesize) {
-				request.setAttribute(fileUploadError, "*上传文件大小不得超过20000000KB");
-				flag = false;
-				return "developer/appversionadd";
-			} else if (prefix.equalsIgnoreCase("apk")) {
-				// 判断文件的格式
-				// 截取文件名
-				if (oldFileName.indexOf("-V") == -1) {
-					fileName = oldFileName.substring(0, oldFileName.indexOf(".apk")) + "-" + app_version.getVersionNo()
-							+ ".apk";
-				} else {
-					fileName = oldFileName.substring(0, oldFileName.indexOf("-V")) + "-" + app_version.getVersionNo()
-							+ ".apk";
-				}
-				// 改造文件名称，避免文件名重复
-				System.out.println("fileName:" + fileName);
-				// 生成目标文件
-				File targetFile = new File(path, fileName);
-				if (!targetFile.exists()) {
-					targetFile.mkdirs();
-				}
-				// 保存上传文件
-				try {
-					attach.transferTo(targetFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-					request.setAttribute(fileUploadError, "*上传失败!");
-					flag = false;
-					return "developer/appversionadd";
-				} // 文件路径保存到app_info对象里
-				app_version.setAPKLocPath(path + File.separator + fileName);
-				// 新文件名保存到app_info对象里
-				app_version.setAPKFileName(fileName);
-
-			} else
-
-			{
-				request.setAttribute("fileUploadError", "*上传格式不正确!");
-				flag = false;
-				return "developer/appversionadd";
-			}
-		}
-
-		// END 循环遍历上传的文件 // 如果上传文件报错，就不保存
-		if (flag) {
-			app_version.setId(0);
+		if (myFile.getFileName() != null) {
 			// 防止添加时id为空 报错
+			app_version.setId(0);
+
+			// 新文件名保存到app_info对象里
+			app_version.setAPKFileName(myFile.getFileName());
+			app_version.setAPKLocPath(myFile.getPath());
 			System.out.println("\n Save app_version:" + app_version);
-			count = this.dev_userService.saveAppVersion(app_version); //
-			// 查询当前添加的记录的id，并给app_info更新versionId
+
+			count = this.dev_userService.saveAppVersion(app_version);
+			// 查询当前添加的记录的id，并给app_info更新versionId和更新softwareSize
 			app_info.setVersionId(this.dev_userService.findApp_versionId(app_version));
 			app_info.setId(app_version.getAppId());
+			app_info.setSoftwareSize(app_version.getVersionSize());
 			this.dev_userService.updataApp_infoVersionId(app_info);
 			logger.debug("----------------logger-End---------------saveAppVersion-----" + count);
-			return this.findAppList(null, null, model);
-		} else
-
-		{
+			return "redirect:findAppList.html";
+		} else {
 			logger.debug("----------------logger-End---------------saveAppVersion-----");
-			return this.findAppList(null, null, model);
+			return this.toAddAppVersion(app_info, model);
 		}
 
 	}
@@ -439,7 +485,7 @@ public class DevController {
 	/**
 	 * 把前台传过来的新增app基础信息保存到数据库
 	 * 
-	 * 把service层mapper层写好就完事了
+	 * 把service层mapper层写好就完事了 ok
 	 * 
 	 * @param app_info
 	 * @param model
@@ -450,70 +496,28 @@ public class DevController {
 			@RequestParam(value = "attachs") MultipartFile attachs, Model model) {
 		logger.debug("----------------logger----------------appinfoSave-----");
 		System.out.println("\napp_info：" + app_info);
-		String fileUploadError = null;// 上传错误信息
-		boolean flag = true;// 判断条件// 上传文件的位置
 		int count = 0;// 添加后返回的记录条数
+		// 获取文件名后缀,图片格式很多，所以不判定具体为啥格式
+		String prefix = FilenameUtils.getExtension(attachs.getOriginalFilename());
 		String path = request.getSession().getServletContext().getRealPath("statics" + File.separator + "uploadfiles");
-
+		path = path.substring(0, path.indexOf(File.separator + "webapps")) + File.separator + "uplocalfiles";
 		// START 循环遍历上传的文件
 
-		MultipartFile attach = attachs;
-		// 判断文件是否为空
-		if (!attach.isEmpty()) {
-			// 文件上传失败
-			if (attachs == null) {
-				fileUploadError = "uploadFileError";
-
-			}
-			// 源文件名
-			String oldFileName = attach.getOriginalFilename();
-			// 源文件的后缀
-			String prefix = FilenameUtils.getExtension(oldFileName);
-			// 判断文件大小，不得超过500KB
-			int filesize = 2000000;
-			if (attach.getSize() > filesize) {
-				request.setAttribute(fileUploadError, "*上传文件大小不得超过2048KB");
-				flag = false;
-				return "developer/appinfoadd";
-			} else if (prefix.equalsIgnoreCase("jpg") || prefix.equalsIgnoreCase("png")
-					|| prefix.equalsIgnoreCase("jpeg") || prefix.equalsIgnoreCase("pneg")) {// 判断文件的格式
-				// 改造文件名称，避免文件名重复
-				String fileName = System.currentTimeMillis() + RandomUtils.nextInt(0, 1000000) + "_Personal.jpg";
-				// 生成目标文件
-				File targetFile = new File(path, fileName);
-				if (!targetFile.exists()) {
-					targetFile.mkdirs();
-				}
-				// 保存上传文件
-				try {
-					attach.transferTo(targetFile);
-				} catch (IOException e) {
-					e.printStackTrace();
-					request.setAttribute(fileUploadError, "*上传失败!");
-					flag = false;
-					return "developer/appinfoadd";
-				}
-				// 文件路径保存到app_info对象里
-				app_info.setLogoLocPath(path + File.separator + fileName);
-
-			} else {
-				request.setAttribute("fileUploadError", "*上传图片格式不正确!");
-				flag = false;
-				return "developer/appinfoadd";
-			}
-		}
-
-		// END 循环遍历上传的文件
-		// 如果上传文件报错，就不保存
-		if (flag) {
+		// 保存文件
+		MyFile myFile = new MyFile(attachs, app_info.getSoftwareName(), path, prefix);
+		if (myFile.getFileName() != null) {
+			app_info.setLogoLocPath(myFile.getPath());
 			System.out.println("\n updata:" + app_info);
-			app_info.setId(0);// 随便给个值，添加数据时触发器会自动替换
+			// 随便给个值，添加数据时触发器会自动替换
+			app_info.setId(0);
+			app_info.setDevId(app_info.getCreatedBy());
 			count = this.dev_userService.addApp_info(app_info);
 			logger.debug("----------------logger-End---------------appinfoSave-----" + count);
-			return this.findAppList(null, null, model);
+			return "redirect:findAppList.html";
 		} else {
+			System.out.println("添加失败");
 			logger.debug("----------------logger-End---------------appinfoSave-----");
-			return this.findAppList(null, null, model);
+			return this.toAppinfoAdd();
 		}
 
 	}
@@ -591,6 +595,152 @@ public class DevController {
 			return JSONArray.toJSONString(result);
 		}
 
+	}
+
+	/**
+	 * 先根据id查出那条数据，并删除那条数据所指的apk文件，再删除那条数据的apk链接
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/delFile", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+	@ResponseBody
+	public String delFile(Integer id) {
+		logger.debug("----------------logger----------------delFile-----");
+		HashMap<String, String> result = new HashMap<String, String>();
+		App_version app_version = this.dev_userService.findApp_versionById(id);
+		String apkPath = app_version.getAPKLocPath();
+		// 删除文件
+		File file = new File(apkPath);
+		// 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+		if (file.exists() && file.isFile()) {
+			if (file.delete()) {
+				result.put("result", "success");
+			} else {
+				result.put("result", "failed");
+			}
+		} else {
+			result.put("result", "empty");
+		}
+		app_version.setAPKLocPath("");
+		app_version.setAPKFileName("");
+		int count = this.dev_userService.updataApp_version(app_version);
+		logger.debug("----------------logger-End---------------delFile-----" + count);
+		return JSONArray.toJSONString(result);
+	}
+
+	/**
+	 * 删除app信息并删除其所有的版本,并删除文件
+	 * 
+	 * @param id
+	 * @return
+	 */
+	@RequestMapping(value = "/delApp_info", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+	@ResponseBody
+	public String delApp_info(Integer id) {
+		logger.debug("----------------logger----------------delApp_info-----");
+		System.out.println(id);
+		HashMap<String, String> delresult = new HashMap<String, String>();
+
+		App_info app_info1 = this.dev_userService.getApp_infoById(id);
+		// 删除app_info的图标文件
+		File file = new File(app_info1.getLogoLocPath());
+		// 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+		if (file.exists() && file.isFile()) {
+			file.delete();
+		}
+		if (app_info1.getVersionId() != null) {
+			List<App_version> app_versions = this.dev_userService.findApp_versionAndAppName(app_info1.getId());
+			for (App_version app_version : app_versions) {
+				// 删除文件
+				File file2 = new File(app_version.getAPKLocPath());
+				// 如果文件路径所对应的文件存在，并且是一个文件，则直接删除
+				if (file2.exists() && file2.isFile()) {
+					file2.delete();
+				}
+			}
+		}
+		int countOfApp_info = this.dev_userService.delApp_info(id);
+		int countOfApp_version = this.dev_userService.delApp_versionByAppId(id);
+		if (countOfApp_info == 0) {
+			delresult.putIfAbsent("delresult", "false");
+		} else if (countOfApp_info != 0) {
+			delresult.putIfAbsent("delresult", "true");
+		}
+
+		logger.debug("----------------logger-End---------------delApp_info-----countOfApp_info:" + countOfApp_info
+				+ "\n" + "countOfApp_version:" + countOfApp_version);
+		return JSONArray.toJSONString(delresult);
+	}
+
+	/**
+	 * 从后端返回字符流传给前端 还需判断路径是否存在
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/img", produces = "text/html;charset=UTF-8", method = RequestMethod.POST)
+	@ResponseBody
+	public String img(Integer id) throws Exception {
+		App_info app_info = this.dev_userService.getApp_infoById(id);
+		File file = new File(app_info.getLogoLocPath());
+		if (app_info.getLogoLocPath() != null) {
+			String imgPath = app_info.getLogoLocPath();
+			BufferedImage image = ImageIO.read(new FileInputStream(imgPath));
+			BufferedImage img = new BufferedImage(300, 150, BufferedImage.TYPE_INT_RGB);
+			img = image;
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			ImageIO.write(img, "jpg", outputStream);
+			BASE64Encoder encoder = new BASE64Encoder();
+			String base64Img = encoder.encode(outputStream.toByteArray());
+			// 返回字符流数据，所以不用JSONArray,,,注！
+			return JSON.toJSONString(base64Img);
+		}
+
+		return "";
+	}
+
+	/**
+	 * 拿到app_info Id先查出那条记录，再根据此记录的status来执行不同的操作
+	 * 
+	 * @param id
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/{id}/sale", produces = "text/html;charset=UTF-8", method = RequestMethod.PUT)
+	@ResponseBody
+	public String sale(@PathVariable Integer id) throws Exception {
+		logger.debug("----------------logger---------------sale-----");
+		// 初始化需要的变量
+		HashMap<String, String> resultMsg = new HashMap<String, String>();
+		int count = 0;
+		App_info app_info = this.dev_userService.getApp_infoById(id);
+
+		// status为4是已上架，执行下架操作,2,5为未上架，故 执行上架操作
+		if (app_info.getStatus() == 4) {
+			// 5为已下架
+			app_info.setStatus(5);
+			count = this.dev_userService.updataApp_info(app_info);
+
+		} else if (app_info.getStatus() == 2 || app_info.getStatus() == 5) {
+			// 4为已上架
+			app_info.setStatus(4);
+			count = this.dev_userService.updataApp_info(app_info);
+		}
+		if (count == 1) {
+			resultMsg.putIfAbsent("resultMsg", "success");
+			resultMsg.putIfAbsent("errorCode", "0");
+		} else if (count == 0) {
+			resultMsg.putIfAbsent("resultMsg", "failed");
+		} else {
+			resultMsg.putIfAbsent("errorCode", "exception000001");
+		}
+		{
+
+		}
+		logger.debug("----------------logger-End---------------sale-----count=" + count);
+		return JSONArray.toJSONString(resultMsg);
 	}
 
 	/**

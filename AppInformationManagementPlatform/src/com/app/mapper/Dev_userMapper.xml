@@ -76,21 +76,30 @@
 		#{APKLocPath},
 		#{APKFileName},
 		#{createdBy},
-		sysdate )
+		sysdate)
 	</insert>
 
 
 
-	<!-- 删除 -->
-	<!-- <delete id="deleteUser" parameterType="int"> delete from SMBMS_USER 
-		WHERE ID=#{id} </delete> -->
+	<!-- 删除app信息 -->
+	<delete id="delApp_info" parameterType="int">
+		delete from App_info
+		WHERE ID=#{id}
+	</delete>
+
+	<!-- 删除app版本信息 -->
+	<delete id="delApp_versionByAppId" parameterType="int">
+		delete from App_version
+		WHERE appid=#{id}
+	</delete>
+
 	<!--修改用户密码 -->
 	<!-- <update id="userUpdataPwd" parameterType="com.app.pojo.Dev_user"> update 
 		smbms_user <trim prefix="set" suffixOverrides="," suffix="where id=#{id}"> 
 		<if test="userPassword !=null">userPassword=#{userPassword},</if> <if test="modifyBy 
 		!=null">modifyBy=#{modifyBy},</if> modifyDate=sysdate, </trim> </update> -->
 
-	<!-- 更新用户数据 -->
+	<!-- 更新app_info数据 -->
 	<update id="updataApp_info" parameterType="com.app.pojo.App_info">
 		update App_info
 		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
@@ -108,26 +117,54 @@
 			<if test="softwareName !=''">
 				<if test="logoLocPath !=null">logoLocPath=#{logoLocPath},</if>
 			</if>
+			<if test="status !=null">status=#{status},</if>
 			<if test="modifyBy !=null">modifyBy=#{modifyBy},</if>
 			modifyDate=sysdate,
 		</trim>
 	</update>
 
+
+	<!-- 更新app_version数据 -->
+	<update id="updataApp_version" parameterType="com.app.pojo.App_version">
+		update App_version
+		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
+			<if test="versionNo !=null">versionNo=#{versionNo},</if>
+			<if test="versionInfo !=null">versionInfo=#{versionInfo},</if>
+			<if test="publishStatus !=null">publishStatus=#{publishStatus},</if>
+			<if test="versionSize !=null">versionSize=#{versionSize},</if>
+			<if test="APKLocPath !=null">APKLocPath=#{APKLocPath},</if>
+			<if test="APKFileName !=null">APKFileName=#{APKFileName},</if>
+			<if test="modifyBy !=null">modifyBy=#{modifyBy},</if>
+			modifyDate=sysdate,
+		</trim>
+	</update>
+
+
 	<!-- 新增app版本号的同时更新app_info里的版本号 -->
 	<update id="updataApp_infoVersionId" parameterType="com.app.pojo.App_info">
 		update App_info
-
 		<trim prefix="set" suffixOverrides="," suffix="where id=#{id}">
 			<if test="versionId !=null">versionId=#{versionId},</if>
+			<if test="softwareSize !=null">softwareSize=#{softwareSize},</if>
 		</trim>
 	</update>
 	<!-- 和上面的updataApp_infoVersionId 配套使用，添加成功后查询添加的版本的id -->
+	<!-- 查询app版本最新信息， -->
 	<select id="findApp_versionId" resultType="int"
 		parameterType="com.app.pojo.App_version">
 		select id from App_version where
 		versionNo = #{versionNo}
 		and appId = #{appId}
 	</select>
+
+
+	<!--修改app版本信息的apk地址 -->
+	<!-- <update id="updataApp_versionAPKLocPath" parameterType="com.app.pojo.App_version"> 
+		update App_version <trim prefix="set" suffixOverrides="," suffix="where id=#{id}"> 
+		<if test="APKLocPath !=null">APKLocPath=#{APKLocPath},</if> </trim> </update> -->
+
+
+
 
 
 	<!-- 验证用户输入的用户名和密码是否正确 -->
@@ -143,13 +180,24 @@
 	<!-- 查询app版本信息和appName -->
 	<select id="findApp_versionAndAppName" resultType="com.app.pojo.App_version"
 		parameterType="int">
-		select v.*,a.softwareName as appName , vs.STATUSNAME as publishStatusName
+		select v.*,a.softwareName as appName , vs.STATUSNAME as
+		publishStatusName
 		from App_version v,DATA_VERSIONSTATUS vs
-		,APP_INFO a where
+		,APP_INFO a
+		where
 		v.appId =
 		#{id}
 		and a.id=v.APPID
 		and vs.ID=v.PUBLISHSTATUS
+		order by
+		v.creationDate desc
+	</select>
+
+	<!-- 查询app版本信息,条件id -->
+	<select id="findApp_versionById" resultType="com.app.pojo.App_version"
+		parameterType="int">
+		select * from
+		App_version where id=#{id}
 	</select>
 
 
@@ -159,6 +207,7 @@
 		DATA_APPSTATUS
 
 	</select>
+
 	<!-- 查询所有的app所属平台 -->
 	<select id="findAllOfFlatForm" resultType="com.app.pojo.Data_flatForm">
 		select * from
@@ -215,14 +264,12 @@
 		DATA_FLATFORM where
 		id=#{flatformId}
 	</select>
-
 	<!--查询app状态 -->
 	<select id="getAppStatusName" resultType="String" parameterType="int">
 		select STATUSNAME from
 		DATA_APPSTATUS where
 		id=#{statusId}
 	</select>
-
 	<!--查询最新版本号 -->
 	<select id="getAppVersionNo" resultType="String" parameterType="int">
 		select versionNo from

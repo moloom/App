@@ -87,9 +87,11 @@
         </div>
         <div class="x_content" style="display: block;">
          <br>
-        <form class="form-horizontal form-label-left" action="appversionmodifysave" method="post" enctype="multipart/form-data">
+        <form class="form-horizontal form-label-left" action="updataApp_version.html" method="post" enctype="multipart/form-data">
+        <!-- 多加的隐藏框 -->
            <input type="hidden" name="id" id="id" value="${appVersion.id}">
            <input type="hidden" name="appId" id="appId" value="${appVersion.appId}">
+           <input type="hidden" name="modifyBy" id="modifyBy" value="${devUserSession.id}">
           <div class="item form-group">
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">版本号 <span class="required">*</span>
             </label>
@@ -127,9 +129,8 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">apk文件 <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-            <input type="hidden" id="downloadLink" name="downloadLink" value="${appVersion.downloadLink}"/>
-            <input type="hidden" id="apkLocPath" name="apkLocPath" value="${appVersion.apkLocPath}"/>
-            <input type="hidden" id="apkFileName" name="apkFileName" value="${appVersion.apkFileName}"/>
+            <input type="hidden" id="downloadLink" name="downloadLink" value="${appVersion.APKLocPath}"/>
+            <input type="hidden" id="APKFileName" name="APKFileName" value="${appVersion.APKFileName}"/>
 			<div id="uploadfile" style="display: none">
 				<input id="attach" type="file" class="form-control col-md-7 col-xs-12" name="attach">
 				<p><span style="color:red;font-weight: bold;">*注：1、大小不得超过500m.2、文件类型：apk</span></p>

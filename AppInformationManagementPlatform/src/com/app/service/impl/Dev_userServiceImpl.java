@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.app.mapper.Dev_userMapper;
 import com.app.pojo.App_category;
@@ -41,16 +42,6 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return 0;
 	}
 
-	public int updata(Dev_user dev_user) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	public int Dev_userUpdataPwd(Dev_user dev_user) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
 	public List<Data_appStatus> findAllOfAppStatus() {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.findAllOfAppStatus();
@@ -71,11 +62,13 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return this.dev_userMapper.findOfCategoryLevels(id);
 	}
 
+	@Transactional(rollbackFor = { Exception.class })
 	public App_info verifyAPKName(String APKName) {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.verifyAPKName(APKName);
 	}
 
+	@Transactional(rollbackFor = { Exception.class })
 	public int addApp_info(App_info app_info) {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.addApp_info(app_info);
@@ -111,11 +104,13 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return this.dev_userMapper.updataApp_info(app_info);
 	}
 
+	@Transactional(rollbackFor = { Exception.class })
 	public int saveAppVersion(App_version app_version) {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.saveAppVersion(app_version);
 	}
 
+	@Transactional(rollbackFor = { Exception.class })
 	public int updataApp_infoVersionId(App_info app_info) {
 		// TODO Auto-generated method stub
 		return this.dev_userMapper.updataApp_infoVersionId(app_info);
@@ -136,14 +131,27 @@ public class Dev_userServiceImpl implements Dev_userService {
 		return this.dev_userMapper.getApp_infoListById(id);
 	}
 
-	/*
-	 * public String getCategoryLevel2Name(Integer categoryLevel2) { // TODO
-	 * Auto-generated method stub return
-	 * this.dev_userMapper.getCategoryLevel2Name(categoryLevel2); }
-	 * 
-	 * public String getCategoryLevel3Name(Integer categoryLevel3) { // TODO
-	 * Auto-generated method stub return
-	 * this.dev_userMapper.getCategoryLevel3Name(categoryLevel3); }
-	 */
+	@Transactional(rollbackFor = { Exception.class })
+	public int updataApp_version(App_version app_version) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.updataApp_version(app_version);
+	}
+
+	public App_version findApp_versionById(Integer id) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.findApp_versionById(id);
+	}
+
+	@Transactional(rollbackFor = { Exception.class })
+	public int delApp_info(Integer id) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.delApp_info(id);
+	}
+
+	@Transactional(rollbackFor = { Exception.class })
+	public int delApp_versionByAppId(Integer id) {
+		// TODO Auto-generated method stub
+		return this.dev_userMapper.delApp_versionByAppId(id);
+	}
 
 }

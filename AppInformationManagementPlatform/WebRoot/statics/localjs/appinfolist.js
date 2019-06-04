@@ -113,7 +113,7 @@ $(document).on("click", ".saleSwichOpen,.saleSwichClose", function() {
 var saleSwitchAjax = function(appId, obj) {
 	$.ajax({
 		type : "PUT",
-		url : appId + "/sale.json",
+		url : appId + "/sale",
 		dataType : "json",
 		success : function(data) {
 			/*
@@ -124,8 +124,9 @@ var saleSwitchAjax = function(appId, obj) {
 			 */
 			if (data.errorCode === '0') {
 				if (data.resultMsg === "success") { //操作成功
+					//alert(data.resultMsg);
 					if ("open" === obj.attr("saleSwitch")) {
-						//alert("恭喜您，【"+obj.attr("appsoftwarename")+"】的【上架】操作成功");
+						alert("恭喜您，【" + obj.attr("appsoftwarename") + "】的【上架】操作成功");
 						$("#appInfoStatus" + obj.attr("appinfoid")).html("已上架");
 						obj.className = "saleSwichClose";
 						obj.html("下架");
@@ -170,9 +171,9 @@ var saleSwitchAjax = function(appId, obj) {
 		},
 		error : function(data) {
 			if ("open" === obj.attr("saleSwitch")) {
-				alert("恭喜您，【" + obj.attr("appsoftwarename") + "】的【上架】操作成功");
+				alert("恭喜您，【" + obj.attr("appsoftwarename") + "】的【上架】操作失败");
 			} else if ("close" === obj.attr("saleSwitch")) {
-				alert("恭喜您，【" + obj.attr("appsoftwarename") + "】的【下架】操作成功");
+				alert("恭喜您，【" + obj.attr("appsoftwarename") + "】的【下架】操作失败");
 			}
 		}
 	});
@@ -189,19 +190,20 @@ $(".deleteApp").on("click", function() {
 	var obj = $(this);
 	if (confirm("你确定要删除APP应用【" + obj.attr("appsoftwarename") + "】及其所有的版本吗？")) {
 		$.ajax({
-			type : "GET",
-			url : "delapp.json",
+			type : "POST",
+			url : "delApp_info",
 			data : {
 				id : obj.attr("appinfoid")
 			},
 			dataType : "json",
 			success : function(data) {
-				if (data.delResult == "true") { //删除成功：移除删除行
+				if (data.delresult == "true") { //删除成功：移除删除行
 					alert("删除成功");
-					obj.parents("tr").remove();
-				} else if (data.delResult == "false") { //删除失败
+					obj.parents("tr").remove(); //删除当前的这行
+					history.go(0); //刷新
+				} else if (data.delresult == "false") { //删除失败
 					alert("对不起，删除AAP应用【" + obj.attr("appsoftwarename") + "】失败");
-				} else if (data.delResult == "notexist") {
+				} else if (data.delresult == "notexist") {
 					alert("对不起，APP应用【" + obj.attr("appsoftwarename") + "】不存在");
 				}
 			},

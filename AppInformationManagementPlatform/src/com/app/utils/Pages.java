@@ -29,9 +29,9 @@ public class Pages {
 	public static final void mo() {
 		if (count > 10) {
 			if (count % 10 == 0) {
-				totalPageCount = count / 10;
+				totalPageCount = count / 5;
 			} else {
-				totalPageCount = (count / 10) + 1;
+				totalPageCount = (count / 5) + 1;
 			}
 		} else if (count <= 10 && count > 0) {
 			totalPageCount = 1;

@@ -123,6 +123,14 @@ public interface Dev_userMapper {
 	public int updataApp_info(App_info app_info);
 
 	/**
+	 * 修改app信息
+	 * 
+	 * @param app_info
+	 * @return
+	 */
+	public int updataApp_version(App_version app_version);
+
+	/**
 	 * 根据id查询app信息
 	 * 
 	 * 查询App_info
@@ -155,6 +163,14 @@ public interface Dev_userMapper {
 	 * @return
 	 */
 	public int findApp_versionId(App_version app_version);
+
+	/**
+	 * 查询app版本信息,条件id
+	 * 
+	 * @param app_version
+	 * @return
+	 */
+	public App_version findApp_versionById(Integer id);
 
 	/**
 	 * 在添加app版本信息的同时修改app_info里的versionId
@@ -197,10 +213,18 @@ public interface Dev_userMapper {
 	public int updata(Dev_user dev_user);
 
 	/**
-	 * 修改用户密码
+	 * 删除app信息
 	 * 
-	 * @param dev_user
+	 * @param id
 	 * @return
 	 */
-	public int Dev_userUpdataPwd(Dev_user dev_user);
+	public int delApp_info(Integer id);
+
+	/**
+	 * 删除app版本信息
+	 * 
+	 * @param id
+	 * @return
+	 */
+	public int delApp_versionByAppId(Integer id);
 }

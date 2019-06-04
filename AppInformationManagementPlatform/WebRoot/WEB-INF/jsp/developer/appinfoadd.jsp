@@ -123,7 +123,7 @@
             <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">LOGO图片 <span class="required">*</span>
             </label>
             <div class="col-md-6 col-sm-6 col-xs-12">
-            <input type="file" class="form-control col-md-7 col-xs-12" name="attachs"  required="required" id="attachs"/>
+            <input type="file" accept="image/*" class="form-control col-md-7 col-xs-12" name="attachs"  required="required" id="attachs"/>
             ${fileUploadError }
             </div>
           </div>
